@@ -15,6 +15,7 @@ public class Order {
     private final Instant createdAt = Instant.now();
     private OrderState state = new PlacedState();
     private String rejectionReason;
+    private double total;
 
     public Order(String id, String customerId, String bakeryId, List<OrderLine> lines) {
         if (lines == null || lines.isEmpty()) {
@@ -46,4 +47,7 @@ public class Order {
     public Instant getCreatedAt() { return createdAt; }
     public String getRejectionReason() { return rejectionReason; }
     public OrderStatus getStatus() { return state.status(); }
+
+    public double getTotal() { return total; }
+    public void setTotal(double total) { this.total = total; }
 }

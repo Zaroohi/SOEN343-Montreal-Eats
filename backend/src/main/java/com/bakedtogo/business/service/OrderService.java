@@ -1,4 +1,3 @@
-// OrderService.java
 package com.bakedtogo.business.service;
 
 import com.bakedtogo.business.domain.Bakery;
@@ -12,6 +11,8 @@ import com.bakedtogo.business.domain.enums.Role;
 import com.bakedtogo.business.domain.exception.BusinessRuleException;
 import com.bakedtogo.business.domain.exception.ForbiddenException;
 import com.bakedtogo.business.domain.exception.NotFoundException;
+import com.bakedtogo.business.pricing.PricingStrategy;
+import com.bakedtogo.business.pricing.RegularPricing;
 import com.bakedtogo.infrastructure.EventLogger;
 import com.bakedtogo.persistence.BakeryRepository;
 import com.bakedtogo.persistence.OrderEventRepository;
@@ -19,6 +20,7 @@ import com.bakedtogo.persistence.OrderRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,13 +29,22 @@ public class OrderService {
     private final OrderRepository orders;
     private final OrderEventRepository events;
     private final BakeryRepository bakeries;
+    private final PricingStrategy pricing;
     private final AtomicLong orderCounter = new AtomicLong();
 
+    /** Keeps existing tests working: defaults to regular pricing. */
     public OrderService(OrderRepository orders, OrderEventRepository events,
                         BakeryRepository bakeries) {
+        this(orders, events, bakeries, new RegularPricing());
+    }
+
+    @Autowired
+    public OrderService(OrderRepository orders, OrderEventRepository events,
+                        BakeryRepository bakeries, PricingStrategy pricing) {
         this.orders = orders;
         this.events = events;
         this.bakeries = bakeries;
+        this.pricing = pricing;
     }
 
     // ---------- customer commands ----------
@@ -64,6 +75,7 @@ public class OrderService {
                     menuItem.getPrice(), item.quantity()));
         }
         Order order = new Order(nextOrderId(), actor.id(), bakeryId, lines);
+        order.setTotal(pricing.calculate(lines));
         orders.save(order);
         return new OrderResult(order, record(order, null, actor));
     }
