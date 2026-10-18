@@ -38,6 +38,7 @@ public class SessionInterceptor implements HandlerInterceptor {
 
         request.setAttribute("userId", user.getId());
         request.setAttribute("role", user.getRole());
+        request.setAttribute("user", user);
 
         return true;
     }

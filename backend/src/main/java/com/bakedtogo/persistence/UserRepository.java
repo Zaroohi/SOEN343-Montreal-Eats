@@ -3,7 +3,9 @@ package com.bakedtogo.persistence;
 import com.bakedtogo.business.domain.User;
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class UserRepository {
 
     private Map<String, User> users = new HashMap<>();
