@@ -36,7 +36,7 @@ function LoginView({ onRegister }) {
 
     return (
         <div style={{ maxWidth: "350px", margin: "100px auto", fontFamily: "Arial" }}>
-            <h1>Montreal Eats</h1>
+            <h1>Baked To Go</h1>
             <h2>Login</h2>
 
             <form onSubmit={handleLogin}>
