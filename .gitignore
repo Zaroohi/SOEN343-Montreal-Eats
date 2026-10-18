@@ -1,0 +1,21 @@
+# Java / Maven
+backend/target/
+*.class
+*.jar
+*.log
+
+# Node / React
+frontend/node_modules/
+frontend/build/
+frontend/dist/
+.env
+
+# IDE / OS
+.idea/
+.vscode/
+*.iml
+.DS_Store
+
+# Leftovers from setup
+backend.zip
+.DS_Store
