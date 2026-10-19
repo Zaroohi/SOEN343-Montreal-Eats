@@ -19,3 +19,4 @@ frontend/dist/
 # Leftovers from setup
 backend.zip
 .DS_Store
+.lsp/
