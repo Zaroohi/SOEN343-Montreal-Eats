@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function LoginView({ onRegister }) {
+function LoginView({ onRegister , onLoggedIn }) {
     const [id, setId] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -26,7 +26,7 @@ function LoginView({ onRegister }) {
 
             const data = await response.json();
             sessionStorage.setItem("token", data.token);
-            alert("Login successful!");
+            if (onLoggedIn) onLoggedIn();
         } catch (err) {
             setError(err.message);
         } finally {
