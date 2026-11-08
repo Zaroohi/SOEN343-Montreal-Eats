@@ -1,0 +1,29 @@
+{
+  "accounts": [
+    {
+      "id": "c1",
+      "name": "Alex",
+      "password": "pass123",
+      "role": "CUSTOMER"
+    },
+    {
+      "id": "s1",
+      "name": "Sam",
+      "password": "pass456",
+      "role": "BAKERY_STAFF",
+      "bakeryId": "b1"
+    },
+    {
+      "id": "d1",
+      "name": "Chris",
+      "password": "pass789",
+      "role": "COURIER"
+    },
+    {
+      "id": "o1",
+      "name": "Admin",
+      "password": "admin123",
+      "role": "OPERATOR"
+    }
+  ]
+}
