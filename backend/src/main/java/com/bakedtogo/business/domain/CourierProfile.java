@@ -43,7 +43,7 @@ public class CourierProfile {
         if (status != CourierStatus.OFFLINE) {
             throw new BusinessRuleException("Courier is already on duty (" + status + ")");
         }
-        status = CourierStatus.IDLE;
+        status = currentOrderId != null ? CourierStatus.ASSIGNED : CourierStatus.IDLE;
     }
 
     public void goOffDuty() {

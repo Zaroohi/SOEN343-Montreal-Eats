@@ -1,4 +1,6 @@
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\BackendApplication.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\billing\ConsoleFareNotifier.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\billing\FareNotifier.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\bridge\BakeryOrderView.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\bridge\ConsoleRenderer.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\bridge\CustomerOrderView.java
@@ -36,6 +38,8 @@ C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\service\Actor.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\service\AuthenticationService.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\service\BakeryService.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\service\CourierView.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\service\DeliveryService.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\service\OrderItemRequest.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\service\OrderResult.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\service\OrderService.java
@@ -80,7 +84,9 @@ C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\ActorResolver.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\AuthController.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\BakeryController.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\DeliveryController.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\dto\BakeryResponse.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\dto\DutyRequest.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\dto\ItemUpdateRequest.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\dto\LineRequest.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\dto\LoginRequest.java

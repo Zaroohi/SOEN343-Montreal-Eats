@@ -52,6 +52,28 @@ public class DispatchService {
         }
     }
 
+    /** Re-offers a READY order (reassignment or a released offer). Queues it if nobody is free. */
+    public synchronized void redispatch(String orderId) {
+        Order order = findOrder(orderId);
+        if (order.getStatus() != OrderStatus.READY) {
+            throw new BusinessRuleException("Order " + orderId + " is not ready ("
+                    + order.getStatus() + ")");
+        }
+        if (!tryOffer(order)) {
+            queue.enqueue(orderId);
+            log("Order " + orderId + " is waiting for a courier");
+        }
+    }
+
+    /** A courier declined: exclude them for this order and offer it to the next nearest. */
+    public synchronized void decline(String orderId, String courierId) {
+        declinedBy.computeIfAbsent(orderId, k -> ConcurrentHashMap.newKeySet()).add(courierId);
+        log("Courier " + courierId + " declined order " + orderId);
+        redispatch(orderId);
+    }
+
+    public void clearHistory(String orderId) { declinedBy.remove(orderId); }
+
     /** Called through the observer when a courier becomes available. Oldest order first. */
     private synchronized void retryQueue(CourierProfile courier) {
         for (String orderId : queue.getPending()) {
