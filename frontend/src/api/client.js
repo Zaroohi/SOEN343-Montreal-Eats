@@ -7,10 +7,9 @@ export function log(kind, text) {
 }
 export function subscribe(f) { subscribers.add(f); return () => subscribers.delete(f); }
 export function getLines() { return lines; }
-
-export async function api(method, path, body) {
+export async function api(method, path, body, quiet = false) {
     const token = sessionStorage.getItem("token");
-    log("cmd", `${method} ${path}${body ? " " + JSON.stringify(body) : ""}`);
+    if (!quiet) log("cmd", `${method} ${path}${body ? " " + JSON.stringify(body) : ""}`);
     let res;
     try {
         res = await fetch(path, {
@@ -33,10 +32,13 @@ export async function api(method, path, body) {
         log("error", `${res.status} ${msg}`);
         throw new Error(msg);
     }
-    if (data && data.eventId) {
-        log("ok", `${data.orderId} -> ${data.status} (event ${data.eventId})`);
-    } else {
-        log("ok", "OK");
+    if (!quiet) {
+        if (data && data.eventId) {
+            log("ok", `${data.orderId} -> ${data.status} (event ${data.eventId})`);
+        } else {
+            log("ok", `${res.status} ${method} ${path}`);
+        }
     }
     return data;
 }
+

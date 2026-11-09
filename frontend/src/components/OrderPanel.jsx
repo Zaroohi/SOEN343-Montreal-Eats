@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { api } from "../api/client";
 
-const FINISHED = ["READY", "REJECTED", "CANCELLED"];
+const FINISHED = ["READY", "PICKED_UP", "DELIVERED", "REJECTED", "CANCELLED"];
 
 export default function OrderPanel({ user, version, onChanged }) {
     const [orders, setOrders] = useState([]);
