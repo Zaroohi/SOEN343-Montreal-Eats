@@ -17,6 +17,7 @@ import com.bakedtogo.infrastructure.EventLogger;
 import com.bakedtogo.persistence.BakeryRepository;
 import com.bakedtogo.persistence.OrderEventRepository;
 import com.bakedtogo.persistence.OrderRepository;
+import com.bakedtogo.business.dispatch.DispatchService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -30,21 +31,24 @@ public class OrderService {
     private final OrderEventRepository events;
     private final BakeryRepository bakeries;
     private final PricingStrategy pricing;
+    private final DispatchService dispatch;
     private final AtomicLong orderCounter = new AtomicLong();
 
-    /** Keeps existing tests working: defaults to regular pricing. */
+    /** Keeps existing tests working: regular pricing, no dispatch. */
     public OrderService(OrderRepository orders, OrderEventRepository events,
                         BakeryRepository bakeries) {
-        this(orders, events, bakeries, new RegularPricing());
+        this(orders, events, bakeries, new RegularPricing(), null);
     }
 
     @Autowired
     public OrderService(OrderRepository orders, OrderEventRepository events,
-                        BakeryRepository bakeries, PricingStrategy pricing) {
+                        BakeryRepository bakeries, PricingStrategy pricing,
+                        DispatchService dispatch) {
         this.orders = orders;
         this.events = events;
         this.bakeries = bakeries;
         this.pricing = pricing;
+        this.dispatch = dispatch;
     }
 
     // ---------- customer commands ----------
@@ -122,12 +126,14 @@ public class OrderService {
     }
 
     public synchronized OrderResult markReady(Actor actor, String orderId) {
-        Order order = staffOrder(actor, orderId);
-        OrderStatus from = order.getStatus();
-        order.markReady();           // throws if not PREPARING (R-ORD-04)
-        findBakery(order.getBakeryId()).dequeue(order);
-        return new OrderResult(order, record(order, from, actor));
-    }
+    Order order = staffOrder(actor, orderId);
+    OrderStatus from = order.getStatus();
+    order.markReady();           // throws if not PREPARING (R-ORD-04)
+    findBakery(order.getBakeryId()).dequeue(order);
+    OrderResult result = new OrderResult(order, record(order, from, actor));
+    if (dispatch != null) dispatch.dispatch(order.getId());   // UC-DLV-02
+    return result;
+}
 
     // ---------- queries ----------
 

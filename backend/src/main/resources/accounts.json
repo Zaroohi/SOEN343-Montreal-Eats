@@ -19,6 +19,12 @@
       "password": "pass789",
       "role": "COURIER"
     },
+    {   
+      "id": "d2", 
+      "name": "Dana", 
+      "password": "pass000", 
+      "role": "COURIER" 
+    },
     {
       "id": "o1",
       "name": "Admin",

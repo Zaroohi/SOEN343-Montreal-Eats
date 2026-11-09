@@ -11,6 +11,8 @@ public interface OrderState {
     default OrderState startPreparing() { throw illegal(OrderStatus.PREPARING); }
     default OrderState markReady()      { throw illegal(OrderStatus.READY); }
     default OrderState cancel()         { throw illegal(OrderStatus.CANCELLED); }
+    default OrderState pickUp()         { throw illegal(OrderStatus.PICKED_UP); }
+    default OrderState deliver()        { throw illegal(OrderStatus.DELIVERED); }
 
     private IllegalTransitionException illegal(OrderStatus target) {
         return new IllegalTransitionException(
