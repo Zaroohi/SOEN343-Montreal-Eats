@@ -1,72 +1,95 @@
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\BackendApplication.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\bridge\BakeryOrderView.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\bridge\ConsoleRenderer.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\bridge\CustomerOrderView.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\bridge\OrderView.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\bridge\OutputRenderer.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\bridge\WebRenderer.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\Bakery.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\BakeryStaff.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\Courier.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\Customer.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\enums\BakeryStatus.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\enums\ItemStatus.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\enums\OrderStatus.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\enums\Role.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\exception\BusinessRuleException.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\exception\ForbiddenException.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\exception\IllegalTransitionException.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\exception\NotFoundException.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\exception\UnauthenticatedException.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\MenuItem.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\Order.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\OrderEvent.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\OrderLine.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\PlatformOperator.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\User.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\events\ConsoleListener.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\events\OrderEventListener.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\events\ReadModelListener.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\service\AuthenticationService.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\service\BakeryService.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\service\OrderService.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\service\RegistrationService.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\service\SessionService.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\state\AcceptedState.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\state\CancelledState.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\state\OrderState.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\state\PlacedState.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\state\PreparingState.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\state\ReadyState.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\state\RejectedState.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\strategy\PricingStrategy.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\strategy\PromotionalPricing.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\strategy\RegularPricing.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\infrastructure\config\AccountsConfig.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\infrastructure\config\CityConfig.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\infrastructure\config\ConfigurationLoader.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\infrastructure\EventLogger.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\persistence\BakeryRepository.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\persistence\memory\InMemoryBakeryRepository.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\persistence\memory\InMemoryMenuItemRepository.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\persistence\memory\InMemoryOrderEventRepository.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\persistence\memory\InMemoryOrderLineRepository.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\persistence\memory\InMemoryOrderRepository.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\persistence\memory\InMemoryUserRepository.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\persistence\MenuItemRepository.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\persistence\OrderEventRepository.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\persistence\OrderLineRepository.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\persistence\OrderRepository.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\persistence\UserRepository.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\AuthController.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\BakeryController.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\dto\LineRequest.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\dto\LoginRequest.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\dto\LoginResponse.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\dto\OrderResponse.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\dto\PlaceOrderRequest.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\dto\RejectRequest.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\GlobalExceptionHandler.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\OrderController.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\SessionInterceptor.java
-C:\Users\Zara Grigoryan\Desktop\PA2\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\WebConfig.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\BackendApplication.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\bridge\BakeryOrderView.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\bridge\ConsoleRenderer.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\bridge\CustomerOrderView.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\bridge\OrderView.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\bridge\OutputRenderer.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\bridge\WebRenderer.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\dispatch\CourierManager.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\dispatch\CourierObserver.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\dispatch\DispatchQueue.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\dispatch\DispatchService.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\Bakery.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\BakeryStaff.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\Courier.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\CourierProfile.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\Customer.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\enums\BakeryStatus.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\enums\CourierStatus.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\enums\ItemStatus.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\enums\OrderStatus.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\enums\Role.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\exception\BusinessRuleException.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\exception\ForbiddenException.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\exception\IllegalTransitionException.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\exception\NotFoundException.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\exception\UnauthenticatedException.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\MenuItem.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\Order.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\OrderEvent.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\OrderLine.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\PlatformOperator.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\domain\User.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\pricing\PricingStrategy.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\pricing\PromotionalPricing.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\pricing\RegularPricing.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\service\Actor.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\service\AuthenticationService.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\service\BakeryService.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\service\OrderItemRequest.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\service\OrderResult.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\service\OrderService.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\service\RegistrationService.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\service\SessionService.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\state\AcceptedState.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\state\CancelledState.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\state\DeliveredState.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\state\OrderState.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\state\PickedUpState.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\state\PlacedState.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\state\PreparingState.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\state\ReadyState.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\state\RejectedState.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\strategy\PricingStrategy.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\strategy\PromotionalPricing.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\strategy\RegularPricing.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\view\BakeryOrderView.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\view\ConsoleOrderRenderer.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\view\CustomerOrderView.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\view\JsonOrderRenderer.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\view\OrderRenderer.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\view\OrderView.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\view\OrderViewFactory.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\infrastructure\AccountsStartup.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\infrastructure\CityLoader.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\infrastructure\config\AccountsConfig.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\infrastructure\config\CityConfig.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\infrastructure\config\ConfigurationLoader.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\infrastructure\EventLogger.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\infrastructure\PricingConfig.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\infrastructure\PricingSettings.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\persistence\BakeryRepository.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\persistence\CourierRepository.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\persistence\memory\InMemoryBakeryRepository.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\persistence\memory\InMemoryCourierRepository.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\persistence\memory\InMemoryOrderEventRepository.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\persistence\memory\InMemoryOrderRepository.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\persistence\OrderEventRepository.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\persistence\OrderRepository.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\persistence\UserRepository.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\ActorResolver.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\AuthController.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\BakeryController.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\dto\BakeryResponse.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\dto\ItemUpdateRequest.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\dto\LineRequest.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\dto\LoginRequest.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\dto\LoginResponse.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\dto\OrderResponse.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\dto\PlaceOrderRequest.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\dto\RejectRequest.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\GlobalExceptionHandler.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\MeController.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\OrderController.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\SessionInterceptor.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\WebConfig.java

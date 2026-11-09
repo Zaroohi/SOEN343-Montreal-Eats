@@ -18,7 +18,8 @@
     }
   ],
   "couriers": [
-    { "id": "co1", "latitude": 45.50, "longitude": -73.57, "status": "IDLE" }
+    { "id": "d1", "latitude": 45.50, "longitude": -73.57, "status": "OFFLINE" },
+    { "id": "d2", "latitude": 45.53, "longitude": -73.60, "status": "OFFLINE" }
   ],
   "customers": [
     { "id": "c1", "name": "Alice", "latitude": 45.51, "longitude": -73.58 }

@@ -1,0 +1,10 @@
+com\bakedtogo\business\state\DeliveredState.class
+com\bakedtogo\business\dispatch\DispatchQueue.class
+com\bakedtogo\business\dispatch\DispatchService.class
+com\bakedtogo\business\dispatch\CourierManager.class
+com\bakedtogo\persistence\CourierRepository.class
+com\bakedtogo\business\domain\enums\CourierStatus.class
+com\bakedtogo\business\domain\CourierProfile.class
+com\bakedtogo\persistence\memory\InMemoryCourierRepository.class
+com\bakedtogo\business\state\PickedUpState.class
+com\bakedtogo\business\dispatch\CourierObserver.class
