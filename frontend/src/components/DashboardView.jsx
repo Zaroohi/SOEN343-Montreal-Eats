@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import BakeryPanel from "./BakeryPanel";
 import OrderPanel from "./OrderPanel";
 import OutputConsole from "./OutputConsole";
+import CourierPanel from "./CourierPanel";
+import OperatorDeliveryPanel from "./OperatorDeliveryPanel";
 
 export default function DashboardView({ user, onLogout }) {
     const [version, setVersion] = useState(0);
@@ -18,7 +20,11 @@ export default function DashboardView({ user, onLogout }) {
             </div>
             <div style={{ display: "flex", gap: 30 }}>
                 <div style={{ flex: 1 }}><BakeryPanel user={user} onChanged={refresh} /></div>
-                <div style={{ flex: 1 }}><OrderPanel user={user} version={version} onChanged={refresh} /></div>
+                <div style={{ flex: 1 }}>
+                    {user.role !== "COURIER" && <OrderPanel user={user} version={version} onChanged={refresh} />}
+                    {user.role === "COURIER" && <CourierPanel onChanged={refresh} />}
+                    {user.role === "OPERATOR" && <OperatorDeliveryPanel version={version} onChanged={refresh} />}
+                </div>
             </div>
             <h3>Output console</h3>
             <OutputConsole />

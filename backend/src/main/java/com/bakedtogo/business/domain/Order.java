@@ -33,6 +33,8 @@ public class Order {
     public void startPreparing() { state = state.startPreparing(); }
     public void markReady()      { state = state.markReady(); }
     public void cancel()         { state = state.cancel(); }
+    public void pickUp()         { state = state.pickUp(); }
+    public void deliver()        { state = state.deliver(); }
 
     public void reject(String reason) {
         if (reason == null || reason.isBlank()) {

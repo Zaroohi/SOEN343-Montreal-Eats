@@ -6,6 +6,9 @@ import com.bakedtogo.business.domain.enums.BakeryStatus;
 import com.bakedtogo.business.domain.enums.ItemStatus;
 import com.bakedtogo.infrastructure.config.CityConfig;
 import com.bakedtogo.persistence.BakeryRepository;
+import com.bakedtogo.business.domain.CourierProfile;
+import com.bakedtogo.business.domain.enums.CourierStatus;
+import com.bakedtogo.persistence.CourierRepository;
 import java.io.IOException;
 import java.io.InputStream;
 import org.springframework.boot.ApplicationArguments;
@@ -17,10 +20,12 @@ import tools.jackson.databind.json.JsonMapper;
 public class CityLoader implements ApplicationRunner {
 
     private final BakeryRepository bakeryRepository;
+    private final CourierRepository courierRepository;
     private final JsonMapper mapper = JsonMapper.builder().build();
 
-    public CityLoader(BakeryRepository bakeryRepository) {
+    public CityLoader(BakeryRepository bakeryRepository, CourierRepository courierRepository) {
         this.bakeryRepository = bakeryRepository;
+        this.courierRepository = courierRepository;
     }
 
     @Override
@@ -41,6 +46,12 @@ public class CityLoader implements ApplicationRunner {
                 }
                 bakeryRepository.save(bakery);
             }
+            
+            for (CityConfig.CourierConfig c : city.couriers()) {
+                courierRepository.save(new CourierProfile(c.id(), c.latitude(), c.longitude(),
+                    CourierStatus.valueOf(c.status())));
+            }   
+            System.out.println("[CONFIG] Loaded " + city.couriers().size() + " couriers from city.json");
             System.out.println("[CONFIG] Loaded " + city.bakeries().size() + " bakeries from city.json");
         } catch (IOException e) {
             throw new IllegalStateException("Failed to load city.json", e);
