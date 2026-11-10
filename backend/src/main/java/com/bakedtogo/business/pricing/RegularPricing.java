@@ -21,7 +21,13 @@ public RegularPricing(PricingSettings settings) {
     public String name() { return "regular"; }
 
         
+
+@Override
 public double calculate(List<OrderLine> lines) {
+    return calculateBreakdown(lines).total();
+}
+
+public PricingBreakdown calculateBreakdown(List<OrderLine> lines) {
     double subtotal = lines.stream()
             .mapToDouble(l -> l.unitPrice() * l.quantity())
             .sum();
@@ -32,8 +38,22 @@ public double calculate(List<OrderLine> lines) {
         surcharge = settings.smallOrderSurcharge();
     }
 
-    double total = subtotal  + settings.deliveryFee() + settings.serviceFee() + surcharge;
-    return Math.round(total * 100) / 100.0;
+    double total = subtotal
+            + settings.deliveryFee()
+            + settings.serviceFee()
+            + surcharge;
+
+    total = Math.round(total * 100) / 100.0;
+
+    return new PricingBreakdown(
+            subtotal,
+            0.0,
+            settings.deliveryFee(),
+            settings.serviceFee(),
+            surcharge,
+            total
+    );
 }
+
 }
 

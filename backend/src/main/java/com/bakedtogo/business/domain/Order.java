@@ -4,6 +4,7 @@ import com.bakedtogo.business.domain.enums.OrderStatus;
 import com.bakedtogo.business.domain.exception.BusinessRuleException;
 import com.bakedtogo.business.state.OrderState;
 import com.bakedtogo.business.state.PlacedState;
+import com.bakedtogo.business.pricing.PricingBreakdown;
 import java.time.Instant;
 import java.util.List;
 
@@ -16,6 +17,7 @@ public class Order {
     private OrderState state = new PlacedState();
     private String rejectionReason;
     private double total;
+    private PricingBreakdown pricingBreakdown;
 
     public Order(String id, String customerId, String bakeryId, List<OrderLine> lines) {
         if (lines == null || lines.isEmpty()) {
@@ -48,6 +50,22 @@ public class Order {
     public String getRejectionReason() { return rejectionReason; }
     public OrderStatus getStatus() { return state.status(); }
 
-    public double getTotal() { return total; }
-    public void setTotal(double total) { this.total = total; }
+    public double getTotal() { 
+        return total;
+     }
+    public void setTotal(double total) {
+         this.total = total;
+         }
+    public PricingBreakdown getPricingBreakdown() {
+    return pricingBreakdown;
+}
+
+public void setPricingBreakdown(PricingBreakdown pricingBreakdown) {
+    if (pricingBreakdown == null) {
+        throw new IllegalArgumentException("Pricing breakdown cannot be null");
+    }
+
+    this.pricingBreakdown = pricingBreakdown;
+    this.total = pricingBreakdown.total();
+}
 }

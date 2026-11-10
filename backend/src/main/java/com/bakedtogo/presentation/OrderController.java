@@ -12,6 +12,10 @@ import java.util.List;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.bakedtogo.business.domain.enums.OrderStatus;
+import com.bakedtogo.business.domain.enums.Role;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -75,6 +79,45 @@ public class OrderController {
                 ? MediaType.TEXT_PLAIN : MediaType.APPLICATION_JSON;
         return ResponseEntity.ok().contentType(type).body(body);
     }
+
+@GetMapping("/{id}/final-summary")
+public ResponseEntity<String> finalSummary(
+        @PathVariable String id,
+        @RequestParam(defaultValue = "json") String format,
+        HttpServletRequest req) {
+
+    var actor = ActorResolver.from(req);
+
+    if (actor.role() != Role.CUSTOMER) {
+        throw new ResponseStatusException(
+                HttpStatus.FORBIDDEN,
+                "Only customers can view final order summaries");
+    }
+
+    var order = service.getOrder(actor, id);
+
+    if (!order.getCustomerId().equals(actor.id())) {
+        throw new ResponseStatusException(
+                HttpStatus.FORBIDDEN,
+                "You can only view your own order summary");
+    }
+
+    if (order.getStatus() != OrderStatus.DELIVERED) {
+        throw new ResponseStatusException(
+                HttpStatus.CONFLICT,
+                "Order summary is available only after delivery");
+    }
+
+    String body = views.create(actor.role(), format).display(order);
+
+    MediaType type = "text".equalsIgnoreCase(format)
+            ? MediaType.TEXT_PLAIN
+            : MediaType.APPLICATION_JSON;
+
+    return ResponseEntity.ok()
+            .contentType(type)
+            .body(body);
+}
 
     @GetMapping
     public List<OrderResponse> list(HttpServletRequest req) {

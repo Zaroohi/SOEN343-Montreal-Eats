@@ -5,6 +5,7 @@ const FINISHED = ["READY", "REJECTED", "CANCELLED"];
 
 export default function OrderPanel({ user, version, onChanged }) {
     const [orders, setOrders] = useState([]);
+    const [summaries, setSummaries] = useState({});
 
     const load = () => {
     if (user.role === "COURIER") return;
@@ -21,6 +22,24 @@ export default function OrderPanel({ user, version, onChanged }) {
         if (reason) act(id, "reject", { reason });
     }
 
+async function viewFinalSummary(id) {
+    try {
+        const summary = await api(
+            "GET",
+            `/api/orders/${id}/final-summary`
+        );
+
+        setSummaries((prev) => ({
+            ...prev,
+            [id]: typeof summary === "string"
+                ? JSON.parse(summary)
+                : summary
+        }));
+    } catch (error) {
+        alert("Unable to load final order summary.");
+    }
+}
+
     return (
         <div>
             <h3>Orders <button onClick={load}>Refresh</button></h3>
@@ -35,6 +54,28 @@ export default function OrderPanel({ user, version, onChanged }) {
                     </div>
                     {user.role === "CUSTOMER" && !FINISHED.includes(o.status) &&
                         <button onClick={() => act(o.orderId, "cancel")}>Cancel</button>}
+                        
+{user.role === "CUSTOMER" && o.status === "DELIVERED" && (
+    <>
+        <button onClick={() => viewFinalSummary(o.orderId)}>
+            View Final Summary
+        </button>
+
+        {summaries[o.orderId] && (
+            <div style={{
+                border: "1px solid #aaa",
+                padding: 10,
+                marginTop: 8
+            }}>
+                <h4>Final Order Summary</h4>
+                <pre style={{ whiteSpace: "pre-wrap" }}>
+                    {JSON.stringify(summaries[o.orderId], null, 2)}
+                </pre>
+            </div>
+        )}
+    </>
+)}
+
                     {user.role === "BAKERY_STAFF" && !FINISHED.includes(o.status) && (
                         <>
                             <button onClick={() => act(o.orderId, "accept")}>Accept</button>
