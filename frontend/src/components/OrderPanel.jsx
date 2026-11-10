@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { api } from "../api/client";
+import FinalOrderSummary from "./FinalOrderSummary";
+
 
 const FINISHED = ["READY", "PICKED_UP", "DELIVERED", "REJECTED", "CANCELLED"];
 
@@ -60,19 +62,10 @@ async function viewFinalSummary(id) {
         <button onClick={() => viewFinalSummary(o.orderId)}>
             View Final Summary
         </button>
-
-        {summaries[o.orderId] && (
-            <div style={{
-                border: "1px solid #aaa",
-                padding: 10,
-                marginTop: 8
-            }}>
-                <h4>Final Order Summary</h4>
-                <pre style={{ whiteSpace: "pre-wrap" }}>
-                    {JSON.stringify(summaries[o.orderId], null, 2)}
-                </pre>
-            </div>
-        )}
+    {summaries[o.orderId] && (
+    <FinalOrderSummary summary={summaries[o.orderId]} />
+)
+}
     </>
 )}
 

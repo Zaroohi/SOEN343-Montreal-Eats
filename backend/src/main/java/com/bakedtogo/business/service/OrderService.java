@@ -79,7 +79,7 @@ public class OrderService {
                     menuItem.getPrice(), item.quantity()));
         }
         Order order = new Order(nextOrderId(), actor.id(), bakeryId, lines);
-        order.setTotal(pricing.calculate(lines));
+        order.setPricingBreakdown(pricing.calculateBreakdown(lines));
         orders.save(order);
         return new OrderResult(order, record(order, null, actor));
     }

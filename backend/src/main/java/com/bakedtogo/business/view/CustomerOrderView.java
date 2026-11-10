@@ -8,7 +8,10 @@ import com.bakedtogo.business.pricing.PricingBreakdown;
 
 /** Customer-facing: status, items with prices, and the total. */
 public class CustomerOrderView extends OrderView {
-    public CustomerOrderView(OrderRenderer renderer) { super(renderer); }
+    public CustomerOrderView(OrderRenderer renderer)
+     { super(renderer); 
+        
+     }
 
     @Override
     public String display(Order o) {
@@ -22,6 +25,7 @@ public class CustomerOrderView extends OrderView {
                 .toList());
         
 PricingBreakdown breakdown = o.getPricingBreakdown();
+System.out.println("Debug: " + breakdown);
 
 if (breakdown != null) {
     f.put("subtotal", breakdown.subtotal());
