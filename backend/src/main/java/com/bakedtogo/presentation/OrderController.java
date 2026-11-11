@@ -15,9 +15,13 @@ import org.springframework.web.bind.annotation.*;
 import com.bakedtogo.business.domain.enums.OrderStatus;
 import com.bakedtogo.business.domain.enums.Role;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import com.bakedtogo.business.service.OrderHistoryService;
 import com.bakedtogo.business.billing.OrderHistoryResponse;
+import com.bakedtogo.business.billing.LedgerService;
+import com.bakedtogo.business.billing.LedgerTransaction;
+import com.bakedtogo.business.domain.exception.ForbiddenException;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -26,13 +30,17 @@ public class OrderController {
     private final OrderService service;
     private final OrderViewFactory views;
     private final OrderHistoryService historyService;
+    private LedgerService ledgerService;
 
     public OrderController(OrderService service, OrderViewFactory views, OrderHistoryService historyService) {
         this.service = service;
         this.views = views;
         this.historyService = historyService;
         }
-
+    @Autowired
+    public void setLedgerService(LedgerService ledgerService) {
+    this.ledgerService = ledgerService;
+}
     @PostMapping
     public OrderResponse place(@RequestBody PlaceOrderRequest body, HttpServletRequest req) {
         var items = body.lines().stream()
@@ -66,6 +74,30 @@ public class OrderController {
         return OrderResponse.from(service.cancelOrder(ActorResolver.from(req), id));
     }
 
+    @PostMapping("/{id}/refund")
+    public OrderResponse refund(@PathVariable String id, HttpServletRequest req) {
+    return OrderResponse.from(service.refundOrder(ActorResolver.from(req), id));
+}
+
+@GetMapping("/{id}/ledger")
+public List<LedgerTransaction> ledger(
+        @PathVariable String id,
+        HttpServletRequest req) {
+
+    var actor = ActorResolver.from(req);
+
+    if (actor.role() != Role.OPERATOR) {
+        throw new ForbiddenException(
+            "Only platform operators can view ledger transactions"
+        );
+    }
+
+    // Verify that the order exists
+    service.getOrder(actor, id);
+
+    return ledgerService.findByOrderId(id);
+}
+
     @GetMapping("/history")
 public List<OrderHistoryResponse> history(HttpServletRequest req) {
     return historyService.getHistory(ActorResolver.from(req));
@@ -78,9 +110,7 @@ public List<OrderHistoryResponse> history(HttpServletRequest req) {
     }
 
     @GetMapping("/{id}/summary")
-    public ResponseEntity<String> summary(@PathVariable String id,
-                                          @RequestParam(defaultValue = "json") String format,
-                                          HttpServletRequest req) {
+    public ResponseEntity<String> summary(@PathVariable String id, @RequestParam(defaultValue = "json") String format, HttpServletRequest req) {
         var actor = ActorResolver.from(req);
         var order = service.getOrder(actor, id);   // permission check happens here
         String body = views.create(actor.role(), format).display(order);

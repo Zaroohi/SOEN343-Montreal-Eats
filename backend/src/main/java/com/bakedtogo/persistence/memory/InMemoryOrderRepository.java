@@ -1,6 +1,7 @@
 package com.bakedtogo.persistence.memory;
 
 import com.bakedtogo.business.domain.Order;
+import com.bakedtogo.business.domain.OrderEvent;
 import com.bakedtogo.persistence.OrderRepository;
 import java.util.List;
 import java.util.Map;
@@ -20,5 +21,9 @@ public class InMemoryOrderRepository implements OrderRepository {
     public List<Order> findByBakeryId(String bakeryId) {
         return store.values().stream().filter(o -> o.getBakeryId().equals(bakeryId)).toList();
     }
-    public void save(Order order) { store.put(order.getId(), order); }
+    @Override 
+    public void save(Order order) { 
+        store.put(order.getId(), order);
+    }
+
 }

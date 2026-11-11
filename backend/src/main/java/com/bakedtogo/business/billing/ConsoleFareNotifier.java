@@ -6,6 +6,7 @@ import com.bakedtogo.business.domain.enums.OrderStatus;
 import com.bakedtogo.business.pricing.PricingBreakdown;
 import com.bakedtogo.business.pricing.PricingStrategy;
 import org.springframework.stereotype.Component;
+import java.math.BigDecimal;
 
 import java.time.Instant;
 
@@ -14,10 +15,12 @@ public class ConsoleFareNotifier implements FareNotifier {
 
     private final PricingStrategy pricing;
     private final FareLedger ledger;
+    private final LedgerService ledgerService;
 
-    public ConsoleFareNotifier(PricingStrategy pricing, FareLedger ledger) {
+    public ConsoleFareNotifier(PricingStrategy pricing, FareLedger ledger, LedgerService ledgerService) {
         this.pricing = pricing;
         this.ledger = ledger;
+        this.ledgerService = ledgerService;
     }
 
     @Override
@@ -49,6 +52,8 @@ public void orderDelivered(Order order, String courierId) {
 
         // Store the ledger entry
         ledger.record(entry);
+
+    ledgerService.recordCharge(order.getId(),BigDecimal.valueOf(breakdown.total()));
 
         // Log the recorded transaction
         System.out.println(

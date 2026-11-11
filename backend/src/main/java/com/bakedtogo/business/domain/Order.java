@@ -7,6 +7,7 @@ import com.bakedtogo.business.state.PlacedState;
 import com.bakedtogo.business.pricing.PricingBreakdown;
 import java.time.Instant;
 import java.util.List;
+import com.bakedtogo.business.state.DeliveredState;
 
 public class Order {
     private final String id;
@@ -29,35 +30,74 @@ public class Order {
         this.lines = List.copyOf(lines);
     }
 
-    public void accept()         { state = state.accept(); }
-    public void startPreparing() { state = state.startPreparing(); }
-    public void markReady()      { state = state.markReady(); }
-    public void cancel()         { state = state.cancel(); }
-    public void pickUp()         { state = state.pickUp(); }
-    public void deliver()        { state = state.deliver(); }
+    public void accept()
+        { state = state.accept();
+
+        }
+    public void startPreparing() {
+        state = state.startPreparing();
+    }
+    public void markReady() {
+        state = state.markReady();
+    }
+    public void cancel()
+    { state = state.cancel(); }
+
+    public void pickUp() {
+        state = state.pickUp();
+    }
+    public void deliver() {
+        state = state.deliver();
+    }
+    public void refund() {
+    state = state.refund();
+}
+
+/**
+ * Restoring the delivered state if a refund operation fails (added this just in case)
+ */
+public void rollbackRefund() {
+    if (getStatus() != OrderStatus.REFUNDED) {
+        throw new BusinessRuleException(
+            "Only refunded orders can be restored to delivered"
+        );
+    }
+
+    state = new DeliveredState();
+}
+
 
     public void reject(String reason) {
         if (reason == null || reason.isBlank()) {
             throw new BusinessRuleException("A rejection needs a reason");
         }
-        state = state.reject();         
+        state = state.reject();
         this.rejectionReason = reason;
     }
 
-    public String getId() { return id; }
-    public String getCustomerId() { return customerId; }
+    public String getId() {
+        return id;
+    }
+    public String getCustomerId()
+    { return customerId; }
     public String getBakeryId() { return bakeryId; }
-    public List<OrderLine> getLines() { return lines; }
-    public Instant getCreatedAt() { return createdAt; }
-    public String getRejectionReason() { return rejectionReason; }
+    public List<OrderLine> getLines() {
+        return lines;
+    }
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+    public String getRejectionReason() {
+        return rejectionReason;
+    }
     public OrderStatus getStatus() { return state.status(); }
 
-    public double getTotal() { 
+    public double getTotal() {
         return total;
-     }
+    }
     public void setTotal(double total) {
-         this.total = total;
-         }
+        this.total = total;
+}
     public PricingBreakdown getPricingBreakdown() {
     return pricingBreakdown;
 }

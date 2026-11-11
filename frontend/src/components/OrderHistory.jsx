@@ -2,10 +2,14 @@
 import React, { useEffect, useState } from "react";
 import { api } from "../api/client";
 
+
 export default function OrderHistory({ user, version }) {
     const [history, setHistory] = useState([]);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(true);
+    const [refundingId, setRefundingId] = useState(null);
+    const [success, setSuccess] = useState("");
+
 
     useEffect(() => {
         let active = true;
@@ -26,6 +30,41 @@ export default function OrderHistory({ user, version }) {
 
         return () => { active = false; };
     }, [user.id, version]);
+
+const handleRefund = async (orderId) => {
+    if (!window.confirm(`Are you sure you want to refund ${orderId}?`)) {
+        return;
+    }
+
+    setRefundingId(orderId);
+    setError("");
+    setSuccess("");
+
+    try {
+        await api(
+            "POST",
+            `/api/orders/${orderId}/refund`,
+            undefined,
+            true
+        );
+
+        setSuccess(`Order ${orderId} refunded successfully!`);
+
+        const updatedHistory = await api(
+            "GET",
+            "/api/orders/history",
+            undefined,
+            true
+        );
+
+        setHistory(updatedHistory);
+
+    } catch (err) {
+        setError(err.message || "Unable to refund order.");
+    } finally {
+        setRefundingId(null);
+    }
+};
 
     const formatDate = (date) =>
         date ? new Date(date).toLocaleString("en-CA", {
@@ -85,6 +124,7 @@ export default function OrderHistory({ user, version }) {
 
             {loading && <p>Loading order history...</p>}
             {error && <p style={{ color: "#dc2626" }}>{error}</p>}
+            {success && <p style={{ color: "#166534" }}>{success}</p>}
 
             {!loading && !error && history.length === 0 && (
                 <p style={{ color: "#64748b" }}>
@@ -145,6 +185,32 @@ export default function OrderHistory({ user, version }) {
                                 </strong>
                             </div>
                         )}
+                
+{user.role === "OPERATOR" &&
+    entry.finalState === "DELIVERED" && (
+        <button
+            onClick={() => handleRefund(entry.orderId)}
+            disabled={refundingId === entry.orderId}
+            style={{
+                marginTop: 16,
+                padding: "10px 18px",
+                background: "#dc2626",
+                color: "white",
+                border: "none",
+                borderRadius: 8,
+                cursor: refundingId === entry.orderId
+                    ? "not-allowed"
+                    : "pointer",
+                fontWeight: 600,
+                opacity: refundingId === entry.orderId ? 0.6 : 1
+            }}
+        >
+            {refundingId === entry.orderId
+                ? "Processing Refund..."
+                : "Refund Order"}
+        </button>
+    )}
+ 
                 </div>
             ))}
         </section>
