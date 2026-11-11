@@ -4,6 +4,7 @@ import OrderPanel from "./OrderPanel";
 import OutputConsole from "./OutputConsole";
 import CourierPanel from "./CourierPanel";
 import OperatorDeliveryPanel from "./OperatorDeliveryPanel";
+import OrderHistory from "./OrderHistory";
 
 export default function DashboardView({ user, onLogout }) {
     const [version, setVersion] = useState(0);
@@ -26,8 +27,12 @@ export default function DashboardView({ user, onLogout }) {
                     {user.role === "OPERATOR" && <OperatorDeliveryPanel version={version} onChanged={refresh} />}
                 </div>
             </div>
-            <h3>Output console</h3>
-            <OutputConsole />
+           
+<OrderHistory user={user} version={version} />
+
+<h3>Output console</h3>
+<OutputConsole />
+
         </div>
     );
 }

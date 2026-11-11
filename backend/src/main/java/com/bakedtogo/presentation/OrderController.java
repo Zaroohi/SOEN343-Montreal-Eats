@@ -16,6 +16,8 @@ import com.bakedtogo.business.domain.enums.OrderStatus;
 import com.bakedtogo.business.domain.enums.Role;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
+import com.bakedtogo.business.service.OrderHistoryService;
+import com.bakedtogo.business.billing.OrderHistoryResponse;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -23,11 +25,13 @@ public class OrderController {
 
     private final OrderService service;
     private final OrderViewFactory views;
+    private final OrderHistoryService historyService;
 
-    public OrderController(OrderService service, OrderViewFactory views) {
+    public OrderController(OrderService service, OrderViewFactory views, OrderHistoryService historyService) {
         this.service = service;
         this.views = views;
-    }
+        this.historyService = historyService;
+        }
 
     @PostMapping
     public OrderResponse place(@RequestBody PlaceOrderRequest body, HttpServletRequest req) {
@@ -61,6 +65,11 @@ public class OrderController {
     public OrderResponse cancel(@PathVariable String id, HttpServletRequest req) {
         return OrderResponse.from(service.cancelOrder(ActorResolver.from(req), id));
     }
+
+    @GetMapping("/history")
+public List<OrderHistoryResponse> history(HttpServletRequest req) {
+    return historyService.getHistory(ActorResolver.from(req));
+}
 
     @GetMapping("/{id}")
     public OrderResponse get(@PathVariable String id, HttpServletRequest req) {

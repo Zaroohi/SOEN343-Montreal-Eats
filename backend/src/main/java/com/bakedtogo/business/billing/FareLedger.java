@@ -1,30 +1,32 @@
 
 package com.bakedtogo.business.billing;
 
-import com.bakedtogo.business.pricing.PricingBreakdown;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class FareLedger {
 
-    private final Map<String, PricingBreakdown> entries =
+    private final Map<String, LedgerEntry> entries =
             new ConcurrentHashMap<>();
 
-    public void record(String orderId, PricingBreakdown breakdown) {
-        if (orderId == null || breakdown == null) {
-            throw new IllegalArgumentException(
-                    "Order ID and pricing breakdown are required"
-            );
+    public void record(LedgerEntry entry) {
+        if (entry == null || entry.orderId() == null) {
+            throw new IllegalArgumentException("A valid ledger entry and order ID are required");
         }
-
-        entries.putIfAbsent(orderId, breakdown);
+        entries.putIfAbsent(entry.orderId(), entry);
     }
 
-    public Optional<PricingBreakdown> findByOrderId(String orderId) {
+    public Optional<LedgerEntry> findByOrderId(String orderId) {
         return Optional.ofNullable(entries.get(orderId));
     }
+
+public List<LedgerEntry> findAll() {
+    return List.copyOf(entries.values());
+}
+
 }

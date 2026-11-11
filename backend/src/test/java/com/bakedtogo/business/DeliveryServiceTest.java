@@ -49,7 +49,8 @@ class DeliveryServiceTest {
         DispatchService dispatch = new DispatchService(couriers, bakeries, orderRepo, queue, manager);
         orders = new OrderService(orderRepo, eventRepo, bakeries, new RegularPricing(), dispatch);
         delivery = new DeliveryService(couriers, orderRepo, eventRepo, dispatch, manager,
-                order -> fareCalls.incrementAndGet());
+        (order, courierId) -> fareCalls.incrementAndGet());
+
     }
 
     private CourierProfile courier(String id, double lat, CourierStatus status) {
