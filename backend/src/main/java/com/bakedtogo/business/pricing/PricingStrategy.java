@@ -7,4 +7,5 @@ import java.util.List;
 public interface PricingStrategy {
     String name();
     double calculate(List<OrderLine> lines);
+    PricingBreakdown calculateBreakdown(List<OrderLine> lines);
 }

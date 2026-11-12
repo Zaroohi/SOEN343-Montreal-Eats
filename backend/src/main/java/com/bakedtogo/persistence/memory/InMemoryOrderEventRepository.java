@@ -11,6 +11,12 @@ public class InMemoryOrderEventRepository implements OrderEventRepository {
     private final List<OrderEvent> events = new CopyOnWriteArrayList<>();
 
     public void save(OrderEvent event) { events.add(event); }
+
+@Override
+public void delete(OrderEvent event) {
+    events.remove(event);
+}
+
     public List<OrderEvent> findByOrderId(String orderId) {
         return events.stream().filter(e -> e.orderId().equals(orderId)).toList();
     }

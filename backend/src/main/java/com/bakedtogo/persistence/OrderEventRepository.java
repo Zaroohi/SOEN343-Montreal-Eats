@@ -7,4 +7,7 @@ public interface OrderEventRepository {
     void save(OrderEvent event);
     List<OrderEvent> findByOrderId(String orderId);
     List<OrderEvent> findAll();
+
+    // Remove only the specified event during rollback
+    void delete(OrderEvent event);
 }

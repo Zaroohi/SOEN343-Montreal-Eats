@@ -27,20 +27,40 @@ public PromotionalPricing(double discount, PricingSettings settings) {
 
     public String name() { return "promo"; }
 
-    public double calculate(List<OrderLine> lines) {
-           double subtotal = lines.stream()
+   
+@Override
+public double calculate(List<OrderLine> lines) {
+    return calculateBreakdown(lines).total();
+}
+
+public PricingBreakdown calculateBreakdown(List<OrderLine> lines) {
+    double subtotal = lines.stream()
             .mapToDouble(l -> l.unitPrice() * l.quantity())
             .sum();
 
-    double discountedSubtotal = subtotal * (1 - discount);
+    double discountAmount = subtotal * discount;
+    double discountedSubtotal = subtotal - discountAmount;
 
     double surcharge = 0.0;
     if (subtotal < settings.smallOrderThreshold()) {
         surcharge = settings.smallOrderSurcharge();
     }
 
-    double total = discountedSubtotal + settings.deliveryFee() + settings.serviceFee() + surcharge;
+    double total = discountedSubtotal
+            + settings.deliveryFee()
+            + settings.serviceFee()
+            + surcharge;
 
-    return Math.round(total * 100) / 100.0;
-    }
+    total = Math.round(total * 100) / 100.0;
+
+    return new PricingBreakdown(
+            subtotal,
+            discountAmount,
+            settings.deliveryFee(),
+            settings.serviceFee(),
+            surcharge,
+            total
+    );
+}
+
 }

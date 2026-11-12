@@ -107,7 +107,7 @@ public class DeliveryService {
         order.deliver();                                 // throws unless PICKED_UP
         c.deliver();
         OrderEvent event = record(order, from, actor);
-        fares.orderDelivered(order);
+        fares.orderDelivered(order, actor.id());
         manager.updateAvailability(c);                   // observer: courier is idle again
         return new OrderResult(order, event);
     }
