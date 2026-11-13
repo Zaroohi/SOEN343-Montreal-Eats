@@ -1,0 +1,98 @@
+@startuml
+title SSD part 1/3 - Ready -> Dispatch -> Accept (R-DLV-01..04)
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+skinparam responseMessageBelowArrow true
+skinparam maxMessageSize 200
+
+actor "Bakery\nStaff" as B
+actor "Courier" as CR
+participant "Order\nController" as OC
+participant "Order Status\nManager" as OSM
+participant "Order\nRepository" as OR
+participant "Bakery\nRepository" as BR
+database "Event\nLog" as EL
+participant "Delivery\nController" as DC
+participant "Delivery\nService" as DS
+participant "Dispatch\nService" as DSP
+participant "Courier\nRepository" as CRR
+participant "Courier\nProfile" as CP
+participant "Courier\nManager" as CM
+participant "Dispatch\nQueue" as DQ
+
+note over B, DQ : Precondition: order is "preparing" (end of Phase II diagram).
+
+== Restaurant marks the order ready (R-ORD-04) ==
+B -> OC : markReady(orderId)
+activate OC
+OC -> OSM : changeStatus(orderId, ready)
+OSM -> OR : updateStatus(orderId, ready)
+OSM -> EL : recordEvent(eventId, orderId, ready)
+OSM --> OC : status = ready
+
+== Dispatch by the fixed rule (R-DLV-01, R-DLV-02) ==
+OC -> DSP : dispatch(orderId)
+activate DSP
+DSP -> OR : getStatus(orderId)
+OR --> DSP : ready
+note right of DSP : R-DLV-01: only a READY order can be dispatched
+DSP -> BR : getLocation(bakeryId)
+BR --> DSP : latitude / longitude
+DSP -> CRR : findAll()
+CRR --> DSP : couriers
+note right of DSP
+  Keep idle on-duty couriers with no pending offer.
+  Nearest by straight-line distance;
+  ties broken by the lowest courier id.
+end note
+
+alt an idle courier exists
+  DSP -> CP : offer(orderId)
+  DSP --> OC : offered
+  OC --> B : order status = ready (courier offered)
+else no courier is idle (R-DLV-04)
+  DSP -> DQ : enqueue(orderId)
+  DSP --> OC : waiting for a courier
+  OC --> B : order status = ready (waiting for a courier)
+end
+deactivate DSP
+deactivate OC
+
+== Dispatch queue retry (R-DLV-04) ==
+opt order is waiting in the dispatch queue
+  ... a courier goes on duty (or finishes a delivery) ...
+  CR -> DC : toggleDuty(onDuty = true)
+  DC -> DS : toggleDuty(courierId, true)
+  activate DS
+  DS -> CP : goOnDuty()
+  CP --> DS : status = idle
+  DS -> CM : updateAvailability(courier)
+  CM -> DQ : update(courier)
+  activate DQ
+  DQ -> DSP : retryAssignment(courier)
+  activate DSP
+  DSP -> CP : offer(oldest queued orderId)
+  DSP --> DQ : offered
+  deactivate DSP
+  DQ -> DQ : remove(orderId)
+  deactivate DQ
+  DS --> DC : courier view
+  deactivate DS
+  DC --> CR : status = idle, offer for orderId
+end
+
+== Courier accepts the offer (R-DLV-03) ==
+CR -> DC : accept()
+DC -> DS : accept(courierId)
+activate DS
+DS -> CP : accept()
+note right of CP
+  R-DLV-03: courier must be idle and hold an offer;
+  at most one order at a time, else an error is raised.
+end note
+CP --> DS : status = assigned
+DS -> DSP : clearHistory(orderId)
+DS --> DC : courier view
+deactivate DS
+DC --> CR : status = assigned
+@enduml

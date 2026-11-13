@@ -1,0 +1,50 @@
+@startuml
+title SSD part 2/3 - Pickup (ready -> picked_up) and Delivery (picked_up -> delivered)
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+skinparam responseMessageBelowArrow true
+skinparam maxMessageSize 200
+
+actor "Customer" as C
+actor "Courier" as CR
+participant "Delivery\nController" as DC
+participant "Delivery\nService" as DS
+participant "Order" as O
+participant "Courier\nProfile" as CP
+database "Event\nLog" as EL
+participant "Fare\nNotifier (PRC)" as FN
+
+note over C, FN : Precondition: courier status = assigned, order status = ready
+
+== Pickup (R-ORD-04, R-DLV-01) ==
+CR -> DC : confirmPickup()
+activate DC
+DC -> DS : confirmPickup(courierId)
+activate DS
+DS -> O : pickUp()
+note right of O : Rejected unless the order is READY\n(no transition may be skipped)
+O --> DS : status = picked_up
+DS -> CP : pickUp()
+CP --> DS : status = carrying
+DS -> EL : recordEvent(eventId, orderId, ready -> picked_up)
+DS --> DC : order result
+deactivate DS
+DC --> CR : order picked up
+deactivate DC
+
+... courier travels to the customer ...
+
+== Delivery (R-ORD-04) ==
+CR -> DC : confirmDelivery()
+activate DC
+DC -> DS : confirmDelivery(courierId)
+activate DS
+DS -> O : deliver()
+note right of O : Rejected unless the order is PICKED_UP
+O --> DS : status = delivered
+DS -> CP : deliver()
+CP --> DS : status = idle
+DS -> EL : recordEvent(eventId, orderId, picked_up -> delivered)
+DS -> FN : orderDelivered(order, courierId)
+note right of FN : Continues in part 3/3 (PRC)
+@enduml
