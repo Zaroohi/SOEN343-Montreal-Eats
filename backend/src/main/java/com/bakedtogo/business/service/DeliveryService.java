@@ -13,7 +13,9 @@ import com.bakedtogo.business.domain.exception.BusinessRuleException;
 import com.bakedtogo.business.domain.exception.ForbiddenException;
 import com.bakedtogo.business.domain.exception.NotFoundException;
 import com.bakedtogo.infrastructure.EventLogger;
+import com.bakedtogo.persistence.BakeryRepository;
 import com.bakedtogo.persistence.CourierRepository;
+import com.bakedtogo.persistence.CustomerLocationRepository;
 import com.bakedtogo.persistence.OrderEventRepository;
 import com.bakedtogo.persistence.OrderRepository;
 import java.util.List;
@@ -25,16 +27,21 @@ public class DeliveryService {
 
     private final CourierRepository couriers;
     private final OrderRepository orders;
+    private final BakeryRepository bakeries;
+    private final CustomerLocationRepository customers;
     private final OrderEventRepository events;
     private final DispatchService dispatch;
     private final CourierManager manager;
     private final FareNotifier fares;
 
     public DeliveryService(CourierRepository couriers, OrderRepository orders,
+                           BakeryRepository bakeries, CustomerLocationRepository customers,
                            OrderEventRepository events, DispatchService dispatch,
                            CourierManager manager, FareNotifier fares) {
         this.couriers = couriers;
         this.orders = orders;
+        this.bakeries = bakeries;
+        this.customers = customers;
         this.events = events;
         this.dispatch = dispatch;
         this.manager = manager;
@@ -93,6 +100,8 @@ public class DeliveryService {
         OrderStatus from = order.getStatus();
         order.pickUp();                                  // throws unless READY
         c.pickUp();
+        bakeries.findById(order.getBakeryId())           // the courier is now at the bakery
+                .ifPresent(b -> c.moveTo(b.getLatitude(), b.getLongitude()));
         return new OrderResult(order, record(order, from, actor));
     }
 
@@ -106,8 +115,10 @@ public class DeliveryService {
         OrderStatus from = order.getStatus();
         order.deliver();                                 // throws unless PICKED_UP
         c.deliver();
+        customers.findById(order.getCustomerId())        // the courier is now at the customer's address
+                .ifPresent(l -> c.moveTo(l.latitude(), l.longitude()));
         OrderEvent event = record(order, from, actor);
-        fares.orderDelivered(order, actor.id());
+        fares.orderDelivered(order, c.getId());
         manager.updateAvailability(c);                   // observer: courier is idle again
         return new OrderResult(order, event);
     }

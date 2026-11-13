@@ -1,4 +1,5 @@
-import React, { useState ,useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import "./styles.css";
 import LoginView from "./components/LoginView";
 import RegistrationView from "./components/RegistrationView";
 import DashboardView from "./components/DashboardView";
@@ -30,16 +31,11 @@ function App() {
     if (user) return <DashboardView user={user} onLogout={logout} />;
 
     return (
-        <div>
+        <div className="auth-page">
             {page === "login" ? (
-                <LoginView
-                    onRegister={() => setPage("register")}
-                    onLoggedIn={loadUser}
-                />
+                <LoginView onRegister={() => setPage("register")} onLoggedIn={loadUser} />
             ) : (
-                <RegistrationView
-                    onLogin={() => setPage("login")}
-                />
+                <RegistrationView onLogin={() => setPage("login")} />
             )}
         </div>
     );

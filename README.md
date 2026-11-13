@@ -26,6 +26,7 @@ Frontend (in a second terminal):
 
 go from the root to cd frontend
 then run npm install
+then run npm install leaflet
 then finally run npm run dev              # http://localhost:5173
 
 

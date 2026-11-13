@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { api } from "../api/client";
+import { queueBand } from "../api/queueBand";
 
-export default function BakeryPanel({ user, onChanged }) {
+export default function BakeryPanel({ user, version, onChanged }) {
     const [bakeries, setBakeries] = useState([]);
     const [selected, setSelected] = useState(null);
     const [menu, setMenu] = useState([]);
     const [qty, setQty] = useState({});
 
     const loadBakeries = () => api("GET", "/api/bakeries").then(setBakeries).catch(() => {});
-    useEffect(() => { loadBakeries(); }, []);
+    useEffect(() => { loadBakeries(); }, [version]);
 
     async function loadMenu(id) {
         setSelected(id);
@@ -46,7 +47,9 @@ export default function BakeryPanel({ user, onChanged }) {
             <h3>Bakeries</h3>
             {bakeries.map((b) => (
                 <div key={b.id} style={{ marginBottom: 6 }}>
-                    <b>{b.name}</b> [{b.status}] queue: {b.queueLength}{" "}
+                    <b>{b.name}</b> [{b.status}]{" "}
+                    <span style={{ background: queueBand(b.queueLength).color, color: "#fff",
+                        borderRadius: 10, padding: "1px 8px" }}>queue {b.queueLength}</span>{" "}
                     <button onClick={() => loadMenu(b.id)}>Menu</button>
                     {canManage(b) && b.status === "OPEN" &&
                         <button onClick={() => bakeryAction(b.id, "pause")}>Pause</button>}

@@ -1,5 +1,3 @@
-package com.bakedtogo.business;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.bakedtogo.business.dispatch.*;
@@ -16,12 +14,15 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import com.bakedtogo.business.domain.CustomerLocation;
+import com.bakedtogo.persistence.CustomerLocationRepository;
 
 class DeliveryServiceTest {
 
     private static final double LAT = 45.5236, LON = -73.5817;
 
     private InMemoryCourierRepository couriers;
+    private CustomerLocationRepository customers;
     private DispatchQueue queue;
     private OrderService orders;
     private DeliveryService delivery;
@@ -48,9 +49,9 @@ class DeliveryServiceTest {
         queue = new DispatchQueue();
         DispatchService dispatch = new DispatchService(couriers, bakeries, orderRepo, queue, manager);
         orders = new OrderService(orderRepo, eventRepo, bakeries, new RegularPricing(), dispatch);
-        delivery = new DeliveryService(couriers, orderRepo, eventRepo, dispatch, manager,
-        (order, courierId) -> fareCalls.incrementAndGet());
-
+        customers = new CustomerLocationRepository();
+        delivery = new DeliveryService(couriers, orderRepo, bakeries, customers, eventRepo,
+        dispatch, manager, (order, courierId) -> fareCalls.incrementAndGet());
     }
 
     private CourierProfile courier(String id, double lat, CourierStatus status) {
@@ -174,5 +175,19 @@ class DeliveryServiceTest {
     @Test
     void onlyCouriersCanToggleDuty() {
         assertThrows(ForbiddenException.class, () -> delivery.toggleDuty(customer, true));
+    }
+
+    @Test
+    void courierMovesToTheBakeryOnPickupAndToTheCustomerOnDelivery() {
+        CourierProfile c = courier("d1", LAT + 0.05, CourierStatus.IDLE);
+        customers.save(new CustomerLocation("c1", "Alice", 45.60, -73.50));
+        readyOrder();
+        delivery.accept(d1);
+        delivery.confirmPickup(d1);
+        assertEquals(LAT, c.getLatitude(), 1e-9);
+        assertEquals(LON, c.getLongitude(), 1e-9);
+        delivery.confirmDelivery(d1);
+        assertEquals(45.60, c.getLatitude(), 1e-9);
+        assertEquals(-73.50, c.getLongitude(), 1e-9);
     }
 }
