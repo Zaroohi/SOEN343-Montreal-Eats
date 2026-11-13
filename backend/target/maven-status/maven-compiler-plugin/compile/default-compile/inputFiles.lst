@@ -45,6 +45,7 @@ C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\pricing\PricingStrategy.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\pricing\PromotionalPricing.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\pricing\RegularPricing.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\reset\Resettable.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\service\Actor.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\service\AuthenticationService.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\service\BakeryService.java
@@ -57,6 +58,7 @@ C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\service\OrderResult.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\service\OrderService.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\service\RegistrationService.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\service\ResetService.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\service\SessionService.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\state\AcceptedState.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\business\state\CancelledState.java
@@ -113,5 +115,6 @@ C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\MapController.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\MeController.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\OrderController.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\ResetController.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\SessionInterceptor.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\main\java\com\bakedtogo\presentation\WebConfig.java

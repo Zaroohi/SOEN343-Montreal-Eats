@@ -74,8 +74,8 @@ public class MapService {
     }
 
     private MapView courierScoped(Actor actor) {
-        CourierProfile me = couriers.findById(actor.id())
-                .orElseThrow(() -> new NotFoundException("No courier profile for " + actor.id()));
+        CourierProfile me = couriers.findById(actor.id()).orElse(null);
+        if (me == null) return new MapView(List.of(), List.of(), List.of(), List.of());
         String orderId = orderOf(me);
         Order o = orderId == null ? null : orders.findById(orderId).orElse(null);
         List<MapView.BakeryPoint> bp = o == null ? List.of()

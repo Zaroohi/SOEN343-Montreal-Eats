@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { api } from "../api/client";
 import BakeryPanel from "./BakeryPanel";
 import OrderPanel from "./OrderPanel";
 import OutputConsole from "./OutputConsole";
@@ -9,7 +10,17 @@ import CityMap from "./CityMap";
 
 export default function DashboardView({ user, onLogout }) {
     const [version, setVersion] = useState(0);
+    const [resetKey, setResetKey] = useState(0);
     const refresh = () => setVersion((v) => v + 1);
+
+    async function resetSystem() {
+        if (!window.confirm("Reset the whole system to its initial state? All orders, events and courier activity will be erased.")) return;
+        try {
+            await api("POST", "/api/reset");
+            setResetKey((k) => k + 1);   // remounts the bakery panel so a stale open menu disappears
+            refresh();
+        } catch {}
+    }
 
     return (
         <>
@@ -20,6 +31,7 @@ export default function DashboardView({ user, onLogout }) {
                     <span className="role">
                         {user.role.replace("_", " ")}{user.bakeryId ? ` · ${user.bakeryId}` : ""}
                     </span>
+                    {user.role === "OPERATOR" && <button onClick={resetSystem}>Reset system</button>}
                     <button onClick={onLogout}>Log out</button>
                 </div>
             </header>
@@ -32,7 +44,7 @@ export default function DashboardView({ user, onLogout }) {
 
                 <div className="grid">
                     <section className="card">
-                        <BakeryPanel user={user} version={version} onChanged={refresh} />
+                        <BakeryPanel key={resetKey} user={user} version={version} onChanged={refresh} />
                     </section>
                     <section className="card">
                         {user.role !== "COURIER" && <OrderPanel user={user} version={version} onChanged={refresh} />}

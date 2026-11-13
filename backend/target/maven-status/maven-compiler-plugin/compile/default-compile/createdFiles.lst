@@ -1,7 +1,10 @@
 com\bakedtogo\business\service\MapView$CustomerPoint.class
 com\bakedtogo\business\state\DeliveredState.class
+com\bakedtogo\business\service\ResetService.class
 com\bakedtogo\business\dispatch\DispatchQueue.class
+com\bakedtogo\presentation\ResetController.class
 com\bakedtogo\presentation\MapController.class
+com\bakedtogo\business\reset\Resettable.class
 com\bakedtogo\business\dispatch\DispatchService.class
 com\bakedtogo\business\service\MapView$BakeryPoint.class
 com\bakedtogo\business\billing\FareNotifier.class

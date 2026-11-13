@@ -7,12 +7,16 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.stereotype.Repository;
+import com.bakedtogo.business.reset.Resettable;
 
 @Repository
-public class InMemoryBakeryRepository implements BakeryRepository {
+public class InMemoryBakeryRepository implements BakeryRepository, Resettable {
     private final Map<String, Bakery> store = new ConcurrentHashMap<>();
 
     public Optional<Bakery> findById(String id) { return Optional.ofNullable(store.get(id)); }
     public List<Bakery> findAll() { return List.copyOf(store.values()); }
     public void save(Bakery bakery) { store.put(bakery.getId(), bakery); }
+    
+    @Override 
+    public void reset() { store.clear(); }  
 }

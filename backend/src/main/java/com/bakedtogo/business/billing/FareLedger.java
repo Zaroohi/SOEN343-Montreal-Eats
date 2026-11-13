@@ -1,6 +1,6 @@
-
 package com.bakedtogo.business.billing;
 
+import com.bakedtogo.business.reset.Resettable;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-public class FareLedger {
+public class FareLedger implements Resettable {
 
     private final Map<String, LedgerEntry> entries =
             new ConcurrentHashMap<>();
@@ -25,8 +25,12 @@ public class FareLedger {
         return Optional.ofNullable(entries.get(orderId));
     }
 
-public List<LedgerEntry> findAll() {
-    return List.copyOf(entries.values());
-}
+    public List<LedgerEntry> findAll() {
+        return List.copyOf(entries.values());
+    }
 
+    @Override
+    public void reset() {
+        entries.clear();
+    }
 }

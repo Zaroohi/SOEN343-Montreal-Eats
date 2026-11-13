@@ -25,11 +25,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.bakedtogo.business.billing.LedgerService;
 import com.bakedtogo.business.billing.LedgerTransaction;
+import com.bakedtogo.business.reset.Resettable;
 
 import java.math.BigDecimal;
 
 @Service
-public class OrderService {
+public class OrderService implements Resettable {
 
     private final OrderRepository orders;
     private final OrderEventRepository events;
@@ -57,9 +58,9 @@ public class OrderService {
     }
 
 @Autowired
-public void setLedgerService(LedgerService ledgerService) {
-    this.ledgerService = ledgerService;
-}
+    public void setLedgerService(LedgerService ledgerService) {
+        this.ledgerService = ledgerService;
+    }
 
     // ---------- customer commands ----------
 
@@ -135,88 +136,88 @@ public void setLedgerService(LedgerService ledgerService) {
     }
 
     public synchronized OrderResult markReady(Actor actor, String orderId) {
-    Order order = staffOrder(actor, orderId);
-    OrderStatus from = order.getStatus();
-    order.markReady();           // throws if not PREPARING (R-ORD-04)
-    findBakery(order.getBakeryId()).dequeue(order);
-    OrderResult result = new OrderResult(order, record(order, from, actor));
-    if (dispatch != null) dispatch.dispatch(order.getId());   // UC-DLV-02
-    return result;
-}
+        Order order = staffOrder(actor, orderId);
+        OrderStatus from = order.getStatus();
+        order.markReady();           // throws if not PREPARING (R-ORD-04)
+        findBakery(order.getBakeryId()).dequeue(order);
+        OrderResult result = new OrderResult(order, record(order, from, actor));
+        if (dispatch != null) dispatch.dispatch(order.getId());   // UC-DLV-02
+        return result;
+    }
 
 
 
 /** UC-PRC-05: Refund a delivered order. */
-public synchronized OrderResult refundOrder(Actor actor, String orderId) {
-    requireRole(actor, Role.OPERATOR);
+    public synchronized OrderResult refundOrder(Actor actor, String orderId) {
+        requireRole(actor, Role.OPERATOR);
 
-    Order order = findOrder(orderId);
+        Order order = findOrder(orderId);
 
-    if (order.getStatus() != OrderStatus.DELIVERED) {
-        throw new BusinessRuleException(
-            "Only delivered orders can be refunded"
-        );
-    }
-
-    boolean hasCharge = ledgerService.findByOrderId(orderId)
-        .stream()
-        .anyMatch(t -> t.type().equals("CHARGE"));
-
-    if (!hasCharge) {
-        throw new BusinessRuleException(
-            "Cannot refund an order without a recorded charge."
-        );
-    }
-
-    boolean alreadyRefunded = ledgerService.findByOrderId(orderId)
-        .stream()
-        .anyMatch(t -> t.type().equals("REFUND"));
-
-    if (alreadyRefunded) {
-        throw new BusinessRuleException(
-            "Order has already been refunded"
-        );
-    }
-
-    OrderStatus from = order.getStatus();
-    LedgerTransaction refundEntry = null;
-    OrderEvent refundEvent = null;
-
-    try {
-        order.refund();
-
-        refundEntry = ledgerService.recordRefund(
-            orderId,
-            BigDecimal.valueOf(order.getTotal())
-        );
-
-        refundEvent = EventLogger.getInstance().record(
-            order.getId(),
-            from,
-            order.getStatus(),
-            actor.id()
-        );
-
-        events.save(refundEvent);
-
-        return new OrderResult(order, refundEvent);
-
-    } catch (RuntimeException ex) {
-        if (refundEvent != null) {
-            events.delete(refundEvent);
+        if (order.getStatus() != OrderStatus.DELIVERED) {
+            throw new BusinessRuleException(
+                "Only delivered orders can be refunded"
+            );
         }
 
-        if (refundEntry != null) {
-            ledgerService.rollbackRefund(orderId);
+        boolean hasCharge = ledgerService.findByOrderId(orderId)
+            .stream()
+            .anyMatch(t -> t.type().equals("CHARGE"));
+
+        if (!hasCharge) {
+            throw new BusinessRuleException(
+                "Cannot refund an order without a recorded charge."
+            );
         }
 
-        if (order.getStatus() == OrderStatus.REFUNDED) {
-            order.rollbackRefund();
+        boolean alreadyRefunded = ledgerService.findByOrderId(orderId)
+            .stream()
+            .anyMatch(t -> t.type().equals("REFUND"));
+
+        if (alreadyRefunded) {
+            throw new BusinessRuleException(
+                "Order has already been refunded"
+            );
         }
 
-        throw ex;
+        OrderStatus from = order.getStatus();
+        LedgerTransaction refundEntry = null;
+        OrderEvent refundEvent = null;
+
+        try {
+            order.refund();
+
+            refundEntry = ledgerService.recordRefund(
+                orderId,
+                BigDecimal.valueOf(order.getTotal())
+            );
+
+            refundEvent = EventLogger.getInstance().record(
+                order.getId(),
+                from,
+                order.getStatus(),
+                actor.id()
+            );
+
+            events.save(refundEvent);
+
+            return new OrderResult(order, refundEvent);
+
+        } catch (RuntimeException ex) {
+            if (refundEvent != null) {
+                events.delete(refundEvent);
+            }
+
+            if (refundEntry != null) {
+                ledgerService.rollbackRefund(orderId);
+            }
+
+            if (order.getStatus() == OrderStatus.REFUNDED) {
+                order.rollbackRefund();
+            }
+
+            throw ex;
+        }
     }
-}
 
 
 
@@ -283,4 +284,7 @@ public synchronized OrderResult refundOrder(Actor actor, String orderId) {
     private String nextOrderId() {
         return "ORD-" + String.format("%04d", orderCounter.incrementAndGet());
     }
+
+    @Override 
+    public synchronized void reset() { orderCounter.set(0); }
 }

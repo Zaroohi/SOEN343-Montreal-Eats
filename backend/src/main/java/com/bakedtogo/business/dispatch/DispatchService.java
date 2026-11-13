@@ -15,10 +15,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.stereotype.Service;
+import com.bakedtogo.business.reset.Resettable;
 
 /** UC-DLV-02 (dispatch rule) and UC-DLV-04 (queue). */
 @Service
-public class DispatchService {
+public class DispatchService implements Resettable {
 
     private final CourierRepository couriers;
     private final BakeryRepository bakeries;
@@ -113,4 +114,7 @@ public class DispatchService {
     }
 
     private void log(String message) { System.out.println("[DISPATCH] " + message); }
+
+    @Override 
+    public synchronized void reset() { declinedBy.clear(); }
 }

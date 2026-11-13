@@ -8,9 +8,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.stereotype.Repository;
+import com.bakedtogo.business.reset.Resettable;
 
 @Repository
-public class InMemoryOrderRepository implements OrderRepository {
+public class InMemoryOrderRepository implements OrderRepository, Resettable {
     private final Map<String, Order> store = new ConcurrentHashMap<>();
 
     public Optional<Order> findById(String id) { return Optional.ofNullable(store.get(id)); }
@@ -25,5 +26,8 @@ public class InMemoryOrderRepository implements OrderRepository {
     public void save(Order order) { 
         store.put(order.getId(), order);
     }
+
+    @Override 
+    public void reset() { store.clear(); }
 
 }

@@ -90,4 +90,22 @@ class MapServiceTest {
         assertEquals(1, v.bakeries().size());
         assertEquals("d1", v.couriers().get(0).id());
     }
+
+    @Test
+    void emptyCityGivesAnEmptyMapInsteadOfAnError() {
+        MapService empty = new MapService(new InMemoryBakeryRepository(), new InMemoryCourierRepository(),
+                new InMemoryOrderRepository(), new CustomerLocationRepository(), new DispatchQueue());
+        MapView v = empty.view(new Actor("o1", Role.OPERATOR, null));
+        assertTrue(v.bakeries().isEmpty());
+        assertTrue(v.couriers().isEmpty());
+        assertTrue(v.customers().isEmpty());
+        assertTrue(v.dispatchQueue().isEmpty());
+    }
+
+    @Test
+    void courierWithoutAProfileGetsAnEmptyMap() {
+        MapView v = map.view(new Actor("d9", Role.COURIER, null));
+        assertTrue(v.couriers().isEmpty());
+        assertTrue(v.bakeries().isEmpty());
+    }
 }

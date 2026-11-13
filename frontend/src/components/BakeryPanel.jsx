@@ -45,6 +45,7 @@ export default function BakeryPanel({ user, version, onChanged }) {
     return (
         <div>
             <h3>Bakeries</h3>
+            {bakeries.length === 0 && <p style={{ color: "#7a6a5b" }}>No bakeries available.</p>}
             {bakeries.map((b) => (
                 <div key={b.id} style={{ marginBottom: 6 }}>
                     <b>{b.name}</b> [{b.status}]{" "}
@@ -53,7 +54,7 @@ export default function BakeryPanel({ user, version, onChanged }) {
                     <button onClick={() => loadMenu(b.id)}>Menu</button>
                     {canManage(b) && b.status === "OPEN" &&
                         <button onClick={() => bakeryAction(b.id, "pause")}>Pause</button>}
-                    {user.role === "OPERATOR" && b.status !== "OPEN" &&
+                    {canManage(b) && b.status !== "OPEN" &&
                         <button onClick={() => bakeryAction(b.id, "reopen")}>Reopen</button>}
                 </div>
             ))}

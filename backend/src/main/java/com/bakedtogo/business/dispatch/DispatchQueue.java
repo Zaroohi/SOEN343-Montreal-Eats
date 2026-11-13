@@ -6,10 +6,11 @@ import java.util.List;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.function.Consumer;
 import org.springframework.stereotype.Component;
+import com.bakedtogo.business.reset.Resettable;
 
 /** Observer: FIFO queue of READY orders with no courier. Retries when a courier frees up. */
 @Component
-public class DispatchQueue implements CourierObserver {
+public class DispatchQueue implements CourierObserver, Resettable {
     private final ConcurrentLinkedDeque<String> pendingOrders = new ConcurrentLinkedDeque<>();
     private Consumer<CourierProfile> retryHandler = c -> {};
 
@@ -29,4 +30,7 @@ public class DispatchQueue implements CourierObserver {
     public void update(CourierProfile courier) { retryAssignment(courier); }
 
     public void retryAssignment(CourierProfile courier) { retryHandler.accept(courier); }
+
+    @Override 
+    public void reset() { pendingOrders.clear(); }
 }
