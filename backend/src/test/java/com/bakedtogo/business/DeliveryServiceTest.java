@@ -1,5 +1,3 @@
-package com.bakedtogo.business;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.bakedtogo.business.dispatch.*;
@@ -51,15 +49,9 @@ class DeliveryServiceTest {
         queue = new DispatchQueue();
         DispatchService dispatch = new DispatchService(couriers, bakeries, orderRepo, queue, manager);
         orders = new OrderService(orderRepo, eventRepo, bakeries, new RegularPricing(), dispatch);
-<<<<<<< Updated upstream
-        delivery = new DeliveryService(couriers, orderRepo, eventRepo, dispatch, manager,
-                order -> fareCalls.incrementAndGet());
-=======
         customers = new CustomerLocationRepository();
         delivery = new DeliveryService(couriers, orderRepo, bakeries, customers, eventRepo,
         dispatch, manager, (order, courierId) -> fareCalls.incrementAndGet());
-
->>>>>>> Stashed changes
     }
 
     private CourierProfile courier(String id, double lat, CourierStatus status) {

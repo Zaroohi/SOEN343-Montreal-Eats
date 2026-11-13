@@ -23,6 +23,10 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.bakedtogo.business.billing.LedgerService;
+import com.bakedtogo.business.billing.LedgerTransaction;
+
+import java.math.BigDecimal;
 
 @Service
 public class OrderService {
@@ -33,6 +37,7 @@ public class OrderService {
     private final PricingStrategy pricing;
     private final DispatchService dispatch;
     private final AtomicLong orderCounter = new AtomicLong();
+    private LedgerService ledgerService;
 
     /** Keeps existing tests working: regular pricing, no dispatch. */
     public OrderService(OrderRepository orders, OrderEventRepository events,
@@ -51,11 +56,15 @@ public class OrderService {
         this.dispatch = dispatch;
     }
 
+@Autowired
+public void setLedgerService(LedgerService ledgerService) {
+    this.ledgerService = ledgerService;
+}
+
     // ---------- customer commands ----------
 
     /** UC-ORD-03. Enforces R-ORD-02. */
-    public synchronized OrderResult placeOrder(Actor actor, String bakeryId,
-                                               List<OrderItemRequest> items) {
+    public synchronized OrderResult placeOrder(Actor actor, String bakeryId, List<OrderItemRequest> items) {
         requireRole(actor, Role.CUSTOMER);
         Bakery bakery = findBakery(bakeryId);
         if (bakery.getStatus() != BakeryStatus.OPEN) {
@@ -79,7 +88,7 @@ public class OrderService {
                     menuItem.getPrice(), item.quantity()));
         }
         Order order = new Order(nextOrderId(), actor.id(), bakeryId, lines);
-        order.setTotal(pricing.calculate(lines));
+        order.setPricingBreakdown(pricing.calculateBreakdown(lines));
         orders.save(order);
         return new OrderResult(order, record(order, null, actor));
     }
@@ -135,6 +144,82 @@ public class OrderService {
     return result;
 }
 
+
+
+/** UC-PRC-05: Refund a delivered order. */
+public synchronized OrderResult refundOrder(Actor actor, String orderId) {
+    requireRole(actor, Role.OPERATOR);
+
+    Order order = findOrder(orderId);
+
+    if (order.getStatus() != OrderStatus.DELIVERED) {
+        throw new BusinessRuleException(
+            "Only delivered orders can be refunded"
+        );
+    }
+
+    boolean hasCharge = ledgerService.findByOrderId(orderId)
+        .stream()
+        .anyMatch(t -> t.type().equals("CHARGE"));
+
+    if (!hasCharge) {
+        throw new BusinessRuleException(
+            "Cannot refund an order without a recorded charge."
+        );
+    }
+
+    boolean alreadyRefunded = ledgerService.findByOrderId(orderId)
+        .stream()
+        .anyMatch(t -> t.type().equals("REFUND"));
+
+    if (alreadyRefunded) {
+        throw new BusinessRuleException(
+            "Order has already been refunded"
+        );
+    }
+
+    OrderStatus from = order.getStatus();
+    LedgerTransaction refundEntry = null;
+    OrderEvent refundEvent = null;
+
+    try {
+        order.refund();
+
+        refundEntry = ledgerService.recordRefund(
+            orderId,
+            BigDecimal.valueOf(order.getTotal())
+        );
+
+        refundEvent = EventLogger.getInstance().record(
+            order.getId(),
+            from,
+            order.getStatus(),
+            actor.id()
+        );
+
+        events.save(refundEvent);
+
+        return new OrderResult(order, refundEvent);
+
+    } catch (RuntimeException ex) {
+        if (refundEvent != null) {
+            events.delete(refundEvent);
+        }
+
+        if (refundEntry != null) {
+            ledgerService.rollbackRefund(orderId);
+        }
+
+        if (order.getStatus() == OrderStatus.REFUNDED) {
+            order.rollbackRefund();
+        }
+
+        throw ex;
+    }
+}
+
+
+
     // ---------- queries ----------
 
     /** UC-ORD-05. Customers see only their own orders, staff only their bakery's. */
@@ -166,8 +251,7 @@ public class OrderService {
     // ---------- helpers ----------
 
     private OrderEvent record(Order order, OrderStatus from, Actor actor) {
-        OrderEvent event = EventLogger.getInstance()
-                .record(order.getId(), from, order.getStatus(), actor.id());
+        OrderEvent event = EventLogger.getInstance().record(order.getId(), from, order.getStatus(), actor.id());
         events.save(event);
         return event;
     }
@@ -189,13 +273,11 @@ public class OrderService {
     }
 
     private Bakery findBakery(String id) {
-        return bakeries.findById(id)
-                .orElseThrow(() -> new NotFoundException("Bakery " + id + " not found"));
+        return bakeries.findById(id).orElseThrow(() -> new NotFoundException("Bakery " + id + " not found"));
     }
 
     private Order findOrder(String id) {
-        return orders.findById(id)
-                .orElseThrow(() -> new NotFoundException("Order " + id + " not found"));
+        return orders.findById(id).orElseThrow(() -> new NotFoundException("Order " + id + " not found"));
     }
 
     private String nextOrderId() {

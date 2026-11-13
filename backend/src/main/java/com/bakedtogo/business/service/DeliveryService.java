@@ -118,11 +118,7 @@ public class DeliveryService {
         customers.findById(order.getCustomerId())        // the courier is now at the customer's address
                 .ifPresent(l -> c.moveTo(l.latitude(), l.longitude()));
         OrderEvent event = record(order, from, actor);
-<<<<<<< Updated upstream
-        fares.orderDelivered(order);
-=======
         fares.orderDelivered(order, c.getId());
->>>>>>> Stashed changes
         manager.updateAvailability(c);                   // observer: courier is idle again
         return new OrderResult(order, event);
     }

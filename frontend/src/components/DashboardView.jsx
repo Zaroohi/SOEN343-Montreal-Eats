@@ -4,11 +4,8 @@ import OrderPanel from "./OrderPanel";
 import OutputConsole from "./OutputConsole";
 import CourierPanel from "./CourierPanel";
 import OperatorDeliveryPanel from "./OperatorDeliveryPanel";
-<<<<<<< Updated upstream
-=======
 import OrderHistory from "./OrderHistory";
 import CityMap from "./CityMap";
->>>>>>> Stashed changes
 
 export default function DashboardView({ user, onLogout }) {
     const [version, setVersion] = useState(0);
@@ -47,12 +44,6 @@ export default function DashboardView({ user, onLogout }) {
                         )}
                     </section>
                 </div>
-<<<<<<< Updated upstream
-            </div>
-            <h3>Output console</h3>
-            <OutputConsole />
-        </div>
-=======
 
                 <OrderHistory user={user} version={version} />
 
@@ -62,6 +53,5 @@ export default function DashboardView({ user, onLogout }) {
                 </section>
             </main>
         </>
->>>>>>> Stashed changes
     );
 }
