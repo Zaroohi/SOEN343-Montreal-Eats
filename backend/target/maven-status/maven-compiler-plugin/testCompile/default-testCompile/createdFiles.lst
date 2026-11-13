@@ -1,3 +1,4 @@
 com\bakedtogo\business\CourierProfileTest.class
 com\bakedtogo\business\DispatchServiceTest.class
+com\bakedtogo\business\MapServiceTest.class
 com\bakedtogo\business\DeliveryServiceTest.class

@@ -8,9 +8,14 @@ export default function OrderPanel({ user, version, onChanged }) {
 
     const load = () => {
     if (user.role === "COURIER") return;
-    return api("GET", "/api/orders").then(setOrders).catch(() => {});
-    };
+    return api("GET", "/api/orders", undefined, true).then(setOrders).catch(() => {});
+};
 
+useEffect(() => {
+    load();
+    const t = setInterval(load, 4000);
+    return () => clearInterval(t);
+}, [version]);
     async function act(id, action, body) {
         try { await api("POST", `/api/orders/${id}/${action}`, body); } catch {}
         onChanged();

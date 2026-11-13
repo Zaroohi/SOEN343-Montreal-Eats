@@ -1,0 +1,170 @@
+:root {
+  --bg: #faf5ee;
+  --card: #ffffff;
+  --ink: #2b2118;
+  --muted: #7a6a5b;
+  --line: #eadfce;
+  --accent: #c8702a;
+  --accent-dark: #a85a1e;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+}
+
+h1, h2, h3 { margin: 0 0 10px; }
+
+/* ---------- buttons and inputs (also restyles the login and registration pages) ---------- */
+button {
+  margin: 2px 4px 2px 0;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.05s;
+}
+button:hover:not(:disabled) { background: var(--accent-dark); }
+button:active:not(:disabled) { transform: translateY(1px); }
+button:disabled { opacity: 0.55; cursor: not-allowed; }
+
+input {
+  padding: 8px 10px;
+  border: 1px solid #d8cfc2;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #fff;
+}
+input:focus { outline: 2px solid #f0c18f; border-color: var(--accent); }
+
+label { font-size: 13px; font-weight: 600; color: var(--muted); }
+
+/* ---------- login / registration (wraps your teammate's views, no edits to them) ---------- */
+.auth-page {
+  min-height: 100vh;
+  padding: 1px 16px;
+  background: linear-gradient(135deg, #fbe3c4, #f3b98a 60%, #e39a4d);
+}
+.auth-page > div {
+  background: #fff;
+  padding: 28px 28px 22px;
+  border-radius: 18px;
+  box-shadow: 0 12px 36px rgba(80, 40, 10, 0.25);
+}
+.auth-page h1 { color: var(--accent-dark); }
+
+/* ---------- dashboard layout ---------- */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 28px;
+  color: #fff;
+  background: linear-gradient(90deg, #c8702a, #e39a4d);
+  box-shadow: 0 3px 12px rgba(80, 40, 10, 0.25);
+}
+.brand { font-size: 22px; font-weight: 700; letter-spacing: 0.3px; }
+.userchip { display: flex; align-items: center; gap: 12px; font-weight: 600; }
+.role {
+  padding: 3px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.25);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.topbar button { background: #fff; color: var(--accent-dark); }
+.topbar button:hover:not(:disabled) { background: #fdf0e1; }
+
+.page { max-width: 1240px; margin: 0 auto; padding: 24px; }
+
+.card {
+  margin-bottom: 20px;
+  padding: 20px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(80, 50, 20, 0.06);
+}
+.card h3 { margin-top: 0; }
+.section-title { font-size: 18px; margin: 0 0 12px; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 20px;
+  align-items: start;
+  margin-bottom: 20px;
+}
+.grid .card { margin-bottom: 0; }
+
+/* ---------- map ---------- */
+.map-box {
+  position: relative;
+  z-index: 0;
+  height: 440px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+.notice.error {
+  margin-bottom: 8px;
+  padding: 8px 12px;
+  color: #a02a1f;
+  background: #fdecea;
+  border-radius: 8px;
+  font-size: 13px;
+}
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin-top: 10px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.sw {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  margin: 0 3px 0 6px;
+  border-radius: 3px;
+  vertical-align: middle;
+}
+.sw.round { border-radius: 50%; }
+
+.bt-marker { background: none; border: none; }
+.bt-bakery, .bt-courier, .bt-customer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 16px;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+.bt-bakery { width: 36px; height: 36px; border-radius: 11px; }
+.bt-bakery b {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  padding: 1px 6px;
+  font-size: 11px;
+  color: #fff;
+  background: #222;
+  border: 2px solid #fff;
+  border-radius: 999px;
+}
+.bt-courier { width: 32px; height: 32px; border-radius: 50%; }
+.bt-customer { width: 30px; height: 30px; border-radius: 50%; background: #34495e; }
+.bt-marker .mine { border-color: #111; }
+.leaflet-tile-pane { filter: saturate(0.65) brightness(1.05); }
