@@ -1,0 +1,46 @@
+@startuml
+title SSD part 3/3 - PRC charge, ledger, order summary and dispatch retry
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+skinparam responseMessageBelowArrow true
+skinparam maxMessageSize 200
+
+actor "Customer" as C
+actor "Courier" as CR
+participant "Delivery\nService" as DS
+participant "Fare\nNotifier" as FN
+participant "Pricing\nStrategy" as PS
+participant "Order" as O
+participant "Fare\nLedger" as FL
+participant "Ledger\nService" as LS
+participant "Courier\nManager" as CM
+participant "Dispatch\nQueue" as DQ
+
+note over C, DQ : Precondition: order status = delivered (end of part 2/3)
+
+== Charge and ledger (R-PRC-01, R-PRC-02, R-PRC-03) ==
+DS -> FN : orderDelivered(order, courierId)
+activate FN
+FN -> PS : calculateBreakdown(orderLines)
+activate PS
+note right of PS
+  Deterministic fare: subtotal + delivery fee + service fee
+  + small-order surcharge (if subtotal < threshold).
+  All values are read from the configuration file.
+end note
+PS --> FN : breakdown (subtotal, fees, surcharge, total)
+deactivate PS
+FN -> O : setPricingBreakdown(breakdown)
+note right of O : Order summary is created after delivery
+FN -> FL : record(ledger entry: final state, timestamps, total charge)
+FN -> LS : recordCharge(orderId, total)
+LS --> FN : CHARGE transaction recorded
+FN --> C : order summary (items, fees, total charge)
+deactivate FN
+
+== Courier is idle again: retry the dispatch queue (R-DLV-04) ==
+DS -> CM : updateAvailability(courier)
+CM -> DQ : update(courier)
+note right of DQ : Oldest waiting order is offered by the dispatch rule\n(same retry as in part 1/3)
+DS --> CR : order delivered, status = idle
+@enduml

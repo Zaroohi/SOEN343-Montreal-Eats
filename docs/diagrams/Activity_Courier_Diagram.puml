@@ -1,0 +1,48 @@
+@startuml
+title Courier - Activity diagram (Phase III)
+skinparam shadowing false
+skinparam defaultFontSize 12
+
+start
+:Status = **OFFLINE**;
+:Courier goes on duty;
+:Status = **IDLE**\n(no pending offer: available);
+:Notify observers: retry dispatch queue [R-DLV-04];
+
+while (Courier on duty?) is (yes)
+  :Wait for an offer;
+  :Dispatch offers a READY order to this courier\n(nearest idle on-duty courier, ties by lowest id)\n[R-DLV-02];
+
+  switch (Courier action?)
+  case (accept)
+    :Guard: IDLE with a pending offer,\nholds at most one order [R-DLV-03];
+    :Status = **ASSIGNED**\n(assignment is final; only the operator\ncan reassign) [R-DLV-02];
+    if (Courier goes offline before pickup?) then (yes)
+      :Status = **OFFLINE**\n(order stays attached: stalled);
+      :Operator reassigns stalled order [R-DLV-02];
+      :Courier released; order redispatched [R-DLV-04];
+      break
+    else (no)
+    endif
+    :Courier confirms pickup;
+    :Guard: order must be READY [R-ORD-04, R-DLV-01];
+    :Status = **CARRYING**;
+    note right: Going offline is rejected\nwhile CARRYING [R-DLV-03]
+    :Courier confirms delivery;
+    :Guard: order must be PICKED_UP [R-ORD-04];
+    :Status = **IDLE**;
+    :PRC records charge;\nnotify observers: retry dispatch queue [R-DLV-04];
+  case (decline)
+    :Clear offer; order excluded for this courier;
+    :Redispatch to next nearest courier\nor dispatch queue [R-DLV-04];
+    :Notify observers (courier available again);
+  case (go off duty)
+    :Guard: not CARRYING [R-DLV-03];
+    :Unaccepted offer returns to dispatch queue [R-DLV-04];
+    break
+  endswitch
+endwhile (no)
+
+:Status = **OFFLINE**;
+stop
+@enduml

@@ -1,0 +1,85 @@
+@startuml
+title Order lifecycle - Activity diagram (Phase III)
+skinparam shadowing false
+skinparam defaultFontSize 12
+
+start
+:Customer places order\n(bakery, items, quantities);
+
+if (Caller authenticated as CUSTOMER?\n[R-REG-02]) then (no)
+  :Reject: not permitted;
+  stop
+else (yes)
+endif
+
+if (Bakery OPEN and every item AVAILABLE?\n[R-ORD-02]) then (no)
+  :Reject: paused/closed bakery\nor sold-out item;
+  stop
+else (yes)
+endif
+
+:Create order, status = **PLACED**;
+:Record event with event id [R-ORD-05];
+
+switch (Action on PLACED order?)
+case (customer cancels)
+  :Guard: status must be PLACED [R-ORD-04];
+  :Status = **CANCELLED** (terminal);
+  :Record event [R-ORD-05];
+  stop
+case (staff rejects)
+  :Staff rejects order with a reason;
+  :Guard: status must be PLACED [R-ORD-04];
+  :Status = **REJECTED** (terminal);
+  :Record event [R-ORD-05];
+  stop
+case (staff accepts)
+  :Guard: status must be PLACED [R-ORD-04];
+  :Status = **ACCEPTED**;
+  :Append to bakery preparation queue\n(arrival order) [R-ORD-03];
+  :Record event [R-ORD-05];
+endswitch
+
+:Staff starts preparing;
+:Guard: order is head of queue [R-ORD-03]\nand status is ACCEPTED [R-ORD-04];
+:Status = **PREPARING**;
+:Record event [R-ORD-05];
+
+:Staff marks order ready;
+:Guard: status must be PREPARING [R-ORD-04];
+:Status = **READY**;
+:Remove from preparation queue;
+:Record event [R-ORD-05];
+
+:Dispatch only because order is READY [R-DLV-01];
+note right
+  Offer to nearest idle on-duty courier,
+  ties by lowest courier id [R-DLV-02].
+  If none is idle, the order waits in the
+  dispatch queue [R-DLV-04].
+end note
+
+:Courier accepts the offer [R-DLV-02, R-DLV-03];
+:Courier confirms pickup;
+:Guard: status must be READY [R-ORD-04, R-DLV-01];
+:Status = **PICKED_UP**;
+:Record event [R-ORD-05];
+
+:Courier confirms delivery;
+:Guard: status must be PICKED_UP [R-ORD-04];
+:Status = **DELIVERED**;
+:Record event [R-ORD-05];
+
+:PRC: compute fare breakdown [R-PRC-01];
+:Create order summary [R-PRC-02];
+:Record CHARGE in ledger\n(final state, timestamps, total) [R-PRC-03];
+
+if (Operator refunds order?) then (yes)
+  :Guard: status DELIVERED, a CHARGE exists,\nno prior REFUND [R-PRC-05, R-ORD-04];
+  :Status = **REFUNDED**;
+  :Record separate REFUND ledger entry [R-PRC-05];
+  :Record event [R-ORD-05];
+else (no)
+endif
+stop
+@enduml
