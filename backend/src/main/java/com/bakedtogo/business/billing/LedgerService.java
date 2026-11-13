@@ -1,12 +1,13 @@
 package com.bakedtogo.business.billing;
 
+import com.bakedtogo.business.reset.Resettable;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @Service
-public class LedgerService {
+public class LedgerService implements Resettable {
 
     private final LedgerEntryFactory chargeFactory =
             new ChargeEntryFactory();
@@ -65,12 +66,15 @@ public class LedgerService {
         return List.copyOf(transactions);
     }
 
-public synchronized void rollbackRefund(String orderId) {
-    transactions.removeIf(t ->
-        t.orderId().equals(orderId)
-        && t.type().equals("REFUND")
-    );
-}
+    public synchronized void rollbackRefund(String orderId) {
+        transactions.removeIf(t ->
+            t.orderId().equals(orderId)
+            && t.type().equals("REFUND")
+        );
+    }
 
-
+    @Override
+    public synchronized void reset() {
+        transactions.clear();
+    }
 }

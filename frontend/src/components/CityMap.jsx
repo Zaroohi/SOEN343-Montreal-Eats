@@ -187,11 +187,28 @@ export default function CityMap({ user, version }) {
         const t = setInterval(tick, 100);
         return () => clearInterval(t);
     }, []);
+    const noData = data && data.bakeries.length === 0 && data.couriers.length === 0 && data.customers.length === 0;
+    const loading = !data && !error;
 
     return (
         <div>
-            {error && <div className="notice error">Map unavailable: {error}</div>}
-            <div ref={boxRef} className="map-box" />
+            {error && <div className="notice error">The map could not be loaded ({error}). Retrying every few seconds...</div>}
+            <div className="map-wrap">
+                <div ref={boxRef} className="map-box" />
+                {(noData || loading) && (
+                    <div className="map-empty">
+                        <div style={{ fontSize: 34 }}>🗺️</div>
+                        <b>{loading ? "Loading map..." : "The map is empty"}</b>
+                        {!loading && (
+                            <span>
+                                {user.role === "OPERATOR"
+                                    ? "No bakeries, couriers or customers are loaded. Check city.json, or use Reset system to reload the initial state."
+                                    : "There is nothing to show yet."}
+                            </span>
+                        )}
+                    </div>
+                )}
+            </div>
 
             <div className="legend">
                 <span><b>Bakery queue:</b>

@@ -5,20 +5,24 @@ import com.bakedtogo.persistence.OrderEventRepository;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.springframework.stereotype.Repository;
+import com.bakedtogo.business.reset.Resettable;
 
 @Repository
-public class InMemoryOrderEventRepository implements OrderEventRepository {
+public class InMemoryOrderEventRepository implements OrderEventRepository, Resettable {
     private final List<OrderEvent> events = new CopyOnWriteArrayList<>();
 
     public void save(OrderEvent event) { events.add(event); }
 
 @Override
-public void delete(OrderEvent event) {
-    events.remove(event);
-}
+    public void delete(OrderEvent event) {
+        events.remove(event);
+    }
 
     public List<OrderEvent> findByOrderId(String orderId) {
-        return events.stream().filter(e -> e.orderId().equals(orderId)).toList();
+            return events.stream().filter(e -> e.orderId().equals(orderId)).toList();
     }
     public List<OrderEvent> findAll() { return List.copyOf(events); }
+
+    @Override 
+    public void reset() { events.clear(); }
 }

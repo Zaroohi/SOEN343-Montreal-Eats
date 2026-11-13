@@ -45,12 +45,10 @@ public class BakeryService {
     }
 
     /** Only operators may reopen. */
+    /** Staff reopen their own bakery, operators any bakery. */
     public synchronized Bakery reopen(Actor actor, String bakeryId) {
-        requireLoggedIn(actor);
-        if (actor.role() != Role.OPERATOR) {
-            throw new ForbiddenException("Only operators can reopen a bakery");
-        }
         Bakery bakery = find(bakeryId);
+        requireStaffOfOrOperator(actor, bakeryId);
         bakery.setStatus(BakeryStatus.OPEN);
         return bakery;
     }

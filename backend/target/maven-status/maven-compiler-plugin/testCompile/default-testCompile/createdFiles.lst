@@ -1,4 +1,6 @@
 com\bakedtogo\business\CourierProfileTest.class
 com\bakedtogo\business\DispatchServiceTest.class
+com\bakedtogo\business\PricingResetTest.class
+com\bakedtogo\business\BakeryReopenTest.class
 com\bakedtogo\business\MapServiceTest.class
-com\bakedtogo\business\DeliveryServiceTest.class
+com\bakedtogo\business\ResetServiceTest.class
