@@ -5,19 +5,19 @@ Pastry ordering platform. Phase II implements REG (registration, login) and ORD 
 
 ## Platform requirements
 
+### Local development (no Docker)
 - JDK 21 or newer
 - Node.js 18 or newer (with npm)
 - Maven is not needed (the wrapper `mvnw` is included)
 - macOS, Linux or Windows; ports 8080 and 5173 must be free
 
-## Compile and run
+## Compile and run locally (without Docker)
 
 Backend (start this first):
 
 cd backend
 ./mvnw test              
 ./mvnw spring-boot:run   
-
 
 On Windows use `mvnw.cmd`.
 
@@ -29,6 +29,19 @@ then run npm install
 then run npm install leaflet
 then finally run npm run dev              # http://localhost:5173
 
+### Docker development
+- Docker Desktop
+- Ports 8080 and 5173 must be free
+
+## Run with Docker Compose
+
+```bash
+# Build and start both services
+docker-compose up --build
+
+# Stop
+docker-compose down
+```
 
 ## Demo accounts
 

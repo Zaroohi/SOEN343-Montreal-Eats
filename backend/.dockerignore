@@ -1,0 +1,14 @@
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!.mvn/wrapper/maven-wrapper.properties
+.mvn/wrapper/MavenWrapperDownloader.java
+.mvn/timing.properties
+.mvn/extensions.xml
+.mvn/maven.config
+.DS_Store
+*.iml
+*.iws
+*.ipr
+.idea/
+*.log
+*.tmp

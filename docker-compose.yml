@@ -1,0 +1,40 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - PRICING_STRATEGY=regular
+      - PRICING_DELIVERY_FEE=3.00
+      - PRICING_SERVICE_FEE=1.50
+      - PRICING_SMALL_ORDER_THRESHOLD=15.00
+      - PRICING_SMALL_ORDER_SURCHARGE=2.00
+    volumes:
+      - ./backend:/app
+      - ~/.m2:/root/.m2
+    stdin_open: true
+    tty: true
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:8080/api
+      - VITE_API_TARGET=http://backend:8080
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    stdin_open: true
+    tty: true
+
+networks:
+  default:
+    name: montreal-eats-network
