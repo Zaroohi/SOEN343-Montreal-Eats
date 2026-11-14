@@ -79,9 +79,12 @@ public void rollbackRefund() {
     public String getId() {
         return id;
     }
-    public String getCustomerId()
-    { return customerId; }
-    public String getBakeryId() { return bakeryId; }
+    public String getCustomerId() {
+        return customerId;
+    }
+    public String getBakeryId() { 
+        return bakeryId;
+    }
     public List<OrderLine> getLines() {
         return lines;
     }
