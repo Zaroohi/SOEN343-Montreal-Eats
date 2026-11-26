@@ -1,0 +1,168 @@
+@startuml
+title Package diagram - Montreal Eats / Baked To Go (Phase IV)
+skinparam shadowing false
+skinparam defaultFontSize 12
+skinparam componentStyle rectangle
+skinparam ArrowFontSize 11
+skinparam linetype ortho
+skinparam nodesep 90
+skinparam ranksep 110
+skinparam rectangle {
+  RoundCorner 15
+}
+
+rectangle "PRESENTATION LAYER" as PL #DAE8FC {
+  component PRES_UI [
+  <<React>> frontend/src/components + frontend/src/api
+  --
+  REG: LoginView, RegistrationView
+  ORD: BakeryPanel, OrderPanel
+  DLV: CourierPanel, OperatorDeliveryPanel
+  PRC: OrderHistory, FinalOrderSummary
+  DASH: DashboardView, CityMap, OutputConsole
+  API: client.js, routing.js, queueBand.js
+  PROMO: promo code at checkout, updated total,
+  refusal message
+  ]
+
+  component PRES_API [
+  <<package>> com.bakedtogo.presentation
+  --
+  REG: AuthController, SessionInterceptor, WebConfig
+  ORD: OrderController, BakeryController
+  DLV: DeliveryController, MeController
+  DASH: MapController, ResetController
+  DTOs: presentation.dto
+  PROMO: optional promo code in order request
+  ]
+}
+
+rectangle "BUSINESS LOGIC LAYER" as BL #D5F5E3 {
+  component ORD [
+  <<module>> ORD - Orders and Bakery
+  --
+  business.service: OrderService, BakeryService
+  business.state: OrderState + concrete states
+  business.view (Bridge): OrderView, CustomerOrderView,
+  BakeryOrderView, OrderViewFactory,
+  OrderRenderer, ConsoleOrderRenderer, JsonOrderRenderer
+  business.domain: Order, OrderLine, OrderEvent,
+  Bakery, MenuItem
+  ]
+
+  component DLV [
+  <<module>> DLV - Courier and Delivery
+  --
+  business.service: DeliveryService
+  business.dispatch: DispatchService, DispatchQueue,
+  CourierManager, CourierObserver
+  business.domain: CourierProfile, CustomerLocation
+  ]
+
+  component PRC [
+  <<module>> PRC - Pricing, Billing and History
+  --
+  business.pricing (Strategy): PricingStrategy,
+  RegularPricing, PromotionalPricing, PricingBreakdown
+  business.billing: FareNotifier, ConsoleFareNotifier,
+  FareLedger, LedgerEntry, LedgerService,
+  LedgerTransaction, Charge/Refund factories
+  business.service: OrderHistoryService
+  ]
+
+  component PROMO [
+  <<module>> PROMO - Promotions
+  --
+  business.promo
+  Validate one code at placement (R-PROMO-01)
+  Reject expired codes or orders below minimum (R-PROMO-02)
+  Return discount or refusal reason
+  ]
+
+  component REGDASH [
+  <<module>> REG and DASH support
+  --
+  business.service: AuthenticationService,
+  RegistrationService, SessionService,
+  MapService, ResetService
+  business.domain: User, Customer, BakeryStaff,
+  Courier, PlatformOperator
+  business.reset: Resettable
+  Shared: business.domain.enums and exceptions
+  ]
+}
+
+rectangle "PERSISTENCE LAYER" as PERL #FDEBD0 {
+  component PERS_IF [
+  <<package>> com.bakedtogo.persistence
+  --
+  Interfaces: BakeryRepository, OrderRepository,
+  CourierRepository, OrderEventRepository
+  Concrete classes: UserRepository,
+  CustomerLocationRepository
+  ]
+
+  component PERS_MEM [
+  <<package>> com.bakedtogo.persistence.memory
+  --
+  InMemoryBakeryRepository, InMemoryOrderRepository,
+  InMemoryCourierRepository, InMemoryOrderEventRepository
+  ]
+}
+
+rectangle "DATABASE / INFRASTRUCTURE LAYER" as IL #E8DAEF {
+  component INFRA [
+  <<package>> com.bakedtogo.infrastructure (+ .config)
+  --
+  AccountsStartup, CityLoader, EventLogger,
+  PricingConfig, PricingSettings,
+  AccountsConfig, CityConfig, ConfigurationLoader
+  PROMO: promotion rules configuration
+  ]
+
+  component RES [
+  <<resources>> backend/src/main/resources
+  --
+  accounts.json, city.json, application.properties
+  (delivery fee, service fee, small-order threshold
+  and surcharge)
+  PROMO: codes, discounts, expiry dates
+  and minimum order values
+  In-memory runtime data; no external database
+  ]
+}
+
+PRES_UI -down-> PRES_API : HTTP / JSON
+PRES_API -down-> ORD : calls
+PRES_API -down-> DLV : calls
+PRES_API -down-> PRC : calls
+PRES_API -down-> REGDASH : calls
+PRES_API .down.> PERS_IF
+
+ORD -right-> DLV : dispatch when\norder is READY\n(R-DLV-01)
+DLV -right-> PRC : orderDelivered()\n(FareNotifier)
+ORD .right.> PRC : fare for placed order
+
+ORD ..> PROMO : validate promo code
+PROMO ..> PRC : discount for pricing
+PROMO ..> INFRA : read promotion rules
+
+ORD -down-> PERS_IF : uses
+DLV -down-> PERS_IF : uses
+REGDASH -down-> PERS_IF : uses
+PERS_IF -right-> PERS_MEM : implemented by\n(4 interfaces)
+
+PRC -down-> INFRA : reads fees from config\n(R-PRC-01)
+BL .down.> INFRA : ORD, DLV, REG/DASH use\nEventLogger and CityLoader
+INFRA -right-> RES : loads config
+INFRA .up.> PERS_IF : seeds data\n(repositories)
+
+note right of PL
+  Phase IV adds the PROMO module.
+  Promo codes are validated at order placement.
+  Promotion rules are loaded from configuration.
+  Refusal reasons are displayed in the output console.
+  business.domain remains shared across layers.
+  AuthController uses UserRepository directly.
+end note
+@enduml
