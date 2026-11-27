@@ -1,0 +1,136 @@
+@startuml
+title PROMO - Apply or Reject Promo Code (R-PROMO-01, R-PROMO-02)
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+skinparam responseMessageBelowArrow true
+skinparam maxMessageSize 200
+
+actor "Customer" as C
+participant "Bakery\nPanel" as BP
+participant "API Client\n(client.js)" as API
+participant "Order\nController" as OC
+participant "Order\nService" as OS
+participant "Pricing\nStrategy" as PS
+participant "Promo\nService" as PMS
+participant "Order" as O
+participant "Order\nRepository" as OR
+participant "Global Exception\nHandler" as GEH
+participant "Order\nPanel" as OP
+participant "Output\nConsole" as OUT
+
+note over C, OUT
+  Precondition: customer is logged in,
+  bakery is open and items are selected.
+end note
+
+== Place order with promo code (R-PROMO-01) ==
+
+C -> BP : Enter promo code
+C -> BP : Place order
+BP -> BP : place()
+BP -> API : api("POST", "/api/orders", body)
+API -> OC : POST /api/orders\n(bakeryId, lines, promoCode)
+OC -> OS : placeOrder(actor, bakeryId, items, promoCode)
+
+OS -> OS : Validate order and build order lines
+OS -> O : Create order
+OS -> OS : priceOrder(order, promoCode)
+
+OS -> PS : calculateBreakdown(order.getLines())
+PS --> OS : base pricing breakdown
+
+== Validate promo code at placement ==
+
+OS -> PMS : apply(promoCode, base)
+
+note right of PMS
+  Promotion rules are loaded from promos.json
+  by PromoLoader at initialization.
+end note
+
+PMS -> PMS : normalise(promoCode)
+
+note right of PMS
+  R-PROMO-01: at most one promo code per order.
+  Multiple codes are rejected.
+end note
+
+PMS -> PMS : Check code, expiry date\nand minimum order subtotal
+
+alt valid promo code (R-PROMO-01)
+
+  PMS -> PMS : discounted(base, rule)
+
+  note right of PMS
+    Apply the configured discount to the fare.
+    Total = base total - promo discount.
+    Fees and surcharge remain unchanged.
+  end note
+
+  PMS --> OS : Applied(code, breakdown)
+
+  OS -> O : setPromoCode(code)
+  OS -> O : setPricingBreakdown(breakdown)
+  OS -> OR : save(order)
+  OS -> OS : record(order, null, actor)
+
+  OS --> OC : OrderResult
+  OC -> OC : OrderResponse.from(result)
+  OC --> API : HTTP 200 - OrderResponse
+  API --> BP : order confirmation
+  BP -> BP : Clear quantities and promo code
+
+  == Dashboard update ==
+
+  ... next automatic refresh (every 4 seconds) ...
+
+  OP -> OP : load()
+  OP -> API : api("GET", "/api/orders", undefined, true)
+  API -> OC : GET /api/orders
+  OC -> OS : getOrders(actor)
+  OS -> OR : findByCustomerId(actor.id())
+  OR --> OS : customer orders
+  OS --> OC : orders
+  OC -> OC : OrderResponse.from(order, null)
+  OC --> API : order responses
+  API --> OP : updated orders
+  OP -> OP : setOrders(data)
+  OP --> C : Display total, promo code and discount
+
+else expired code or subtotal below minimum (R-PROMO-02)
+
+  PMS --> OS : throw BusinessRuleException(reason)
+  OS --> OC : Propagate exception
+  OC --> GEH : Exception handled by Spring
+  GEH -> GEH : rule(exception)
+  GEH --> API : HTTP 409 - error message
+
+  API -> API : log("error", status + message)
+  API -> OUT : Notify subscribers
+  OUT --> C : Display refusal reason
+  API --> BP : throw Error(message)
+
+  note over OS, OR
+    Promo code is refused.
+    Order is not saved.
+  end note
+
+else unknown code or multiple promo codes
+
+  PMS --> OS : throw BusinessRuleException(reason)
+  OS --> OC : Propagate exception
+  OC --> GEH : Exception handled by Spring
+  GEH -> GEH : rule(exception)
+  GEH --> API : HTTP 409 - error message
+
+  API -> API : log("error", status + message)
+  API -> OUT : Notify subscribers
+  OUT --> C : Display refusal reason
+  API --> BP : throw Error(message)
+
+  note over OS, OR
+    Order is not saved.
+  end note
+
+end
+@enduml
