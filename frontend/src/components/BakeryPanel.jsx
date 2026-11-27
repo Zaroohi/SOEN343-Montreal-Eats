@@ -7,6 +7,7 @@ export default function BakeryPanel({ user, version, onChanged }) {
     const [selected, setSelected] = useState(null);
     const [menu, setMenu] = useState([]);
     const [qty, setQty] = useState({});
+    const [promo, setPromo] = useState("");
 
     const loadBakeries = () => api("GET", "/api/bakeries").then(setBakeries).catch(() => {});
     useEffect(() => { loadBakeries(); }, [version]);
@@ -22,9 +23,11 @@ export default function BakeryPanel({ user, version, onChanged }) {
             .filter(([, q]) => q > 0)
             .map(([menuItemId, quantity]) => ({ menuItemId, quantity }));
         try {
-            await api("POST", "/api/orders", { bakeryId: selected, lines });
+            const body = { bakeryId: selected, lines };
+            if (promo.trim()) body.promoCode = promo.trim();
+            await api("POST", "/api/orders", body);
             setQty({});
-            onChanged();
+            setPromo("");
         } catch {}
     }
 
@@ -75,8 +78,13 @@ export default function BakeryPanel({ user, version, onChanged }) {
                             )}
                         </div>
                     ))}
-                    {user.role === "CUSTOMER" && menu.length > 0 &&
-                        <button onClick={place}>Place order</button>}
+                    {user.role === "CUSTOMER" && menu.length > 0 &&(
+                    <div style={{ marginTop: 6 }}>
+                            <input placeholder="Promo code (optional)" value={promo}
+                                onChange={(e) => setPromo(e.target.value)} style={{ marginRight: 6 }} />
+                            <button onClick={place}>Place order</button>
+                    </div>
+                    )}
                 </div>
             )}
         </div>

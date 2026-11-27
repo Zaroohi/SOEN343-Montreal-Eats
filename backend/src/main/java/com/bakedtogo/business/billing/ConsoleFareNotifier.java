@@ -33,8 +33,9 @@ public void orderDelivered(Order order, String courierId) {
         }
 
         // PRC-01: Calculate the final fare
-        PricingBreakdown breakdown =
-                pricing.calculateBreakdown(order.getLines());
+        PricingBreakdown breakdown = (order.getPromoCode() != null && order.getPricingBreakdown() != null)
+        ? order.getPricingBreakdown()
+        : pricing.calculateBreakdown(order.getLines());
 
         order.setPricingBreakdown(breakdown);
 
