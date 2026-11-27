@@ -43,6 +43,10 @@ docker-compose up --build
 docker-compose down
 ```
 
+To run the comparison file for refactored code vs nonrefactored:
+python docs/metrics/compare.py
+
+
 ## Demo accounts
 
 | Role | ID | Password |
