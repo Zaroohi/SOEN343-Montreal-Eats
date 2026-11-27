@@ -1,12 +1,15 @@
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\test\java\com\bakedtogo\BackendApplicationTests.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\test\java\com\bakedtogo\business\BakeryReopenTest.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\test\java\com\bakedtogo\business\CourierPointCharacterisationTest.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\test\java\com\bakedtogo\business\CourierProfileTest.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\test\java\com\bakedtogo\business\DeliveryCharacterisationTest.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\test\java\com\bakedtogo\business\DeliveryServiceTest.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\test\java\com\bakedtogo\business\DispatchServiceTest.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\test\java\com\bakedtogo\business\MapServiceTest.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\test\java\com\bakedtogo\business\OrderLifecycleTest.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\test\java\com\bakedtogo\business\OrderServiceTest.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\test\java\com\bakedtogo\business\OrderViewTest.java
+C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\test\java\com\bakedtogo\business\PlaceOrderCharacterisationTest.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\test\java\com\bakedtogo\business\PricingFeesTest.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\test\java\com\bakedtogo\business\PricingResetTest.java
 C:\Users\mnhn2\Documents\GitHub\SOEN343-Montreal-Eats\backend\src\test\java\com\bakedtogo\business\PricingStrategyTest.java
