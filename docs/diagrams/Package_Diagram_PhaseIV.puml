@@ -73,7 +73,7 @@ rectangle "BUSINESS LOGIC LAYER" as BL #D5F5E3 {
   component PROMO [
   <<module>> PROMO - Promotions
   --
-  business.promo
+  business.promo: PromoCode, PromoService
   Validate one code at placement (R-PROMO-01)
   Reject expired codes or orders below minimum (R-PROMO-02)
   Return discount or refusal reason
@@ -117,7 +117,7 @@ rectangle "DATABASE / INFRASTRUCTURE LAYER" as IL #E8DAEF {
   AccountsStartup, CityLoader, EventLogger,
   PricingConfig, PricingSettings,
   AccountsConfig, CityConfig, ConfigurationLoader
-  PROMO: promotion rules configuration
+  PROMO: PromoLoader, config.PromoConfig
   ]
 
   component RES [
@@ -126,8 +126,8 @@ rectangle "DATABASE / INFRASTRUCTURE LAYER" as IL #E8DAEF {
   accounts.json, city.json, application.properties
   (delivery fee, service fee, small-order threshold
   and surcharge)
-  PROMO: codes, discounts, expiry dates
-  and minimum order values
+  PROMO: promos.json
+  (codes, discounts, expiry dates and minimum order values)
   In-memory runtime data; no external database
   ]
 }
@@ -160,7 +160,7 @@ INFRA .up.> PERS_IF : seeds data\n(repositories)
 note right of PL
   Phase IV adds the PROMO module.
   Promo codes are validated at order placement.
-  Promotion rules are loaded from configuration.
+  Promotion rules are loaded from promos.json.
   Refusal reasons are displayed in the output console.
   business.domain remains shared across layers.
   AuthController uses UserRepository directly.
