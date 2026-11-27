@@ -81,7 +81,7 @@ class DeliveryCharacterisationTest {
     }
 
     private String readyOrder() {
-        String id = orders.placeOrder(customer, "b1", items).order().getId();
+        String id = orders.placeOrder(customer, "b1", items, null).order().getId();
         orders.acceptOrder(staff, id);
         orders.startPreparing(staff, id);
         orders.markReady(staff, id);

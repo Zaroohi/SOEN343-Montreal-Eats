@@ -26,7 +26,8 @@ import org.springframework.stereotype.Service;
 import com.bakedtogo.business.billing.LedgerService;
 import com.bakedtogo.business.billing.LedgerTransaction;
 import com.bakedtogo.business.reset.Resettable;
-
+import com.bakedtogo.business.pricing.PricingBreakdown;
+import com.bakedtogo.business.promo.PromoService;
 import java.math.BigDecimal;
 
 @Service
@@ -39,6 +40,7 @@ public class OrderService implements Resettable {
     private final DispatchService dispatch;
     private final AtomicLong orderCounter = new AtomicLong();
     private LedgerService ledgerService;
+    private PromoService promoService;
 
     /** Keeps existing tests working: regular pricing, no dispatch. */
     public OrderService(OrderRepository orders, OrderEventRepository events,
@@ -61,18 +63,22 @@ public class OrderService implements Resettable {
     public void setLedgerService(LedgerService ledgerService) {
         this.ledgerService = ledgerService;
     }
+@Autowired(required = false)
+    public void setPromoService(PromoService promoService) {
+        this.promoService = promoService;
+    }
 
     // ---------- customer commands ----------
 
     /** UC-ORD-03. Enforces R-ORD-02. */
         public synchronized OrderResult placeOrder(Actor actor, String bakeryId,
-                                               List<OrderItemRequest> items) {
+                                               List<OrderItemRequest> items , String promoCode) {
         requireRole(actor, Role.CUSTOMER);
         Bakery bakery = findBakery(bakeryId);
         requireOpen(bakery);
         List<OrderLine> lines = buildLines(bakery, requireItems(items));
         Order order = new Order(nextOrderId(), actor.id(), bakeryId, lines);
-        priceOrder(order);
+        priceOrder(order , promoCode);
         orders.save(order);
         return new OrderResult(order, record(order, null, actor));
     }
@@ -113,9 +119,19 @@ public class OrderService implements Resettable {
     }
 
     /** Pricing seam: PROMO's validation and discount are applied here (UC-PROMO-01/02). */
-    private void priceOrder(Order order) {
+    private void priceOrder(Order order, String promoCode) {
+    if (promoCode == null || promoCode.isBlank()) {
         order.setTotal(pricing.calculate(order.getLines()));
+        return;
     }
+    if (promoService == null) {
+        throw new BusinessRuleException("Promo codes are not available");
+    }
+    PricingBreakdown base = pricing.calculateBreakdown(order.getLines());
+    PromoService.Applied applied = promoService.apply(promoCode, base);
+    order.setPromoCode(applied.code());
+    order.setPricingBreakdown(applied.breakdown());   // also sets the total
+}
 
     /** UC-ORD-04. Customers cancel their own order, only while PLACED (the state enforces it). */
     public synchronized OrderResult cancelOrder(Actor actor, String orderId) {

@@ -28,6 +28,7 @@ PricingBreakdown breakdown = o.getPricingBreakdown();
 System.out.println("Debug: " + breakdown);
 
 if (breakdown != null) {
+    if (o.getPromoCode() != null) f.put("promoCode", o.getPromoCode());
     f.put("subtotal", breakdown.subtotal());
     f.put("discount", breakdown.discount());
     f.put("deliveryFee", breakdown.deliveryFee());

@@ -7,7 +7,8 @@ import java.util.List;
 
 public record OrderResponse(String orderId, String bakeryId, String customerId,
                             String status, List<OrderLine> lines, double total,
-                            String rejectionReason, String eventId) {
+                            String rejectionReason, String eventId,
+                            String promoCode, double discount) {
 
     public static OrderResponse from(OrderResult r) {
         return from(r.order(), r.event().eventId());
@@ -16,6 +17,8 @@ public record OrderResponse(String orderId, String bakeryId, String customerId,
     public static OrderResponse from(Order o, String eventId) {
         return new OrderResponse(o.getId(), o.getBakeryId(), o.getCustomerId(),
                 o.getStatus().name(), o.getLines(), o.getTotal(),
-                o.getRejectionReason(), eventId);
+                o.getRejectionReason(), eventId,
+                o.getPromoCode(),
+                o.getPricingBreakdown() == null ? 0.0 : o.getPricingBreakdown().discount());
     }
 }

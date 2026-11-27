@@ -36,7 +36,7 @@ class OrderServiceTest {
 
     @Test
     void placingAnOrderRecordsAnEvent() {
-        OrderResult r = service.placeOrder(customer, "b1", croissants);
+        OrderResult r = service.placeOrder(customer, "b1", croissants,null);
         assertEquals(OrderStatus.PLACED, r.order().getStatus());
         assertNotNull(r.event().eventId());
     }
@@ -44,38 +44,38 @@ class OrderServiceTest {
     @Test
     void soldOutItemIsRefused() {
         assertThrows(BusinessRuleException.class,
-                () -> service.placeOrder(customer, "b1", List.of(new OrderItemRequest("m3", 1))));
+                () -> service.placeOrder(customer, "b1", List.of(new OrderItemRequest("m3", 1)),null));
     }
 
     @Test
     void pausedBakeryIsRefused() {
         assertThrows(BusinessRuleException.class,
-                () -> service.placeOrder(customer, "b2", List.of(new OrderItemRequest("m4", 1))));
+                () -> service.placeOrder(customer, "b2", List.of(new OrderItemRequest("m4", 1)),null));
     }
 
     @Test
     void customerCannotAccept() {
-        String id = service.placeOrder(customer, "b1", croissants).order().getId();
+        String id = service.placeOrder(customer, "b1", croissants,null).order().getId();
         assertThrows(ForbiddenException.class, () -> service.acceptOrder(customer, id));
     }
 
     @Test
     void otherBakeryStaffCannotAccept() {
-        String id = service.placeOrder(customer, "b1", croissants).order().getId();
+        String id = service.placeOrder(customer, "b1", croissants,null).order().getId();
         assertThrows(ForbiddenException.class, () -> service.acceptOrder(otherStaff, id));
     }
 
     @Test
     void cannotMarkReadyStraightFromAccepted() {
-        String id = service.placeOrder(customer, "b1", croissants).order().getId();
+        String id = service.placeOrder(customer, "b1", croissants,null).order().getId();
         service.acceptOrder(staff, id);
         assertThrows(IllegalTransitionException.class, () -> service.markReady(staff, id));
     }
 
     @Test
     void queueIsFirstInFirstOut() {
-        String first = service.placeOrder(customer, "b1", croissants).order().getId();
-        String second = service.placeOrder(customer, "b1", croissants).order().getId();
+        String first = service.placeOrder(customer, "b1", croissants,null).order().getId();
+        String second = service.placeOrder(customer, "b1", croissants,null).order().getId();
         service.acceptOrder(staff, first);
         service.acceptOrder(staff, second);
 
@@ -88,7 +88,7 @@ class OrderServiceTest {
 
     @Test
     void everyTransitionHasItsOwnEventId() {
-        String id = service.placeOrder(customer, "b1", croissants).order().getId();
+        String id = service.placeOrder(customer, "b1", croissants,null).order().getId();
         service.acceptOrder(staff, id);
         service.startPreparing(staff, id);
         service.markReady(staff, id);
@@ -99,7 +99,7 @@ class OrderServiceTest {
 
     @Test
     void cannotCancelAfterAcceptance() {
-        String id = service.placeOrder(customer, "b1", croissants).order().getId();
+        String id = service.placeOrder(customer, "b1", croissants,null).order().getId();
         service.acceptOrder(staff, id);
         assertThrows(IllegalTransitionException.class, () -> service.cancelOrder(customer, id));
     }

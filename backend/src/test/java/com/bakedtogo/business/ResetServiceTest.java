@@ -49,7 +49,7 @@ class ResetServiceTest {
     @Test
     void resetErasesOrdersEventsAndTheDispatchQueue() {
         couriers.findAll().forEach(c -> { if (c.getStatus() != CourierStatus.OFFLINE) c.goOffDuty(); });
-        String id = orders.placeOrder(customer, "b1", items).order().getId();
+        String id = orders.placeOrder(customer, "b1", items,null).order().getId();
         orders.acceptOrder(staff, id);
         orders.startPreparing(staff, id);
         orders.markReady(staff, id);          // nobody is on duty, so the order waits in the queue
@@ -78,9 +78,9 @@ class ResetServiceTest {
 
     @Test
     void idsStartOverAfterAReset() {
-        orders.placeOrder(customer, "b1", items);
+        orders.placeOrder(customer, "b1", items,null);
         reset.reset(operator);
-        OrderResult again = orders.placeOrder(customer, "b1", items);
+        OrderResult again = orders.placeOrder(customer, "b1", items,null);
         assertEquals("ORD-0001", again.order().getId());
         assertEquals("EVT-0001", again.event().eventId());
     }
