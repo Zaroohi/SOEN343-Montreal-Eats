@@ -1,3 +1,4 @@
+
 package com.bakedtogo.business.service;
 
 import com.bakedtogo.business.dispatch.DispatchQueue;
@@ -101,26 +102,36 @@ public class MapService {
         return new MapView.CustomerPoint(c.id(), c.name(), c.latitude(), c.longitude());
     }
 
+    private record Target(String type, Double lat, Double lon) {
+        static final Target NONE = new Target(null, null, null);
+    }
+
     private MapView.CourierPoint courierPoint(CourierProfile c) {
         String orderId = orderOf(c);
-        Order o = orderId == null ? null : orders.findById(orderId).orElse(null);
-        String type = null;
-        Double tLat = null, tLon = null;
-        if (o != null && c.getStatus() != CourierStatus.OFFLINE) {
-            if (c.getStatus() == CourierStatus.CARRYING) {
-                CustomerLocation loc = customers.findById(o.getCustomerId()).orElse(null);
-                if (loc != null) { type = "delivery"; tLat = loc.latitude(); tLon = loc.longitude(); }
-            } else {
-                Bakery b = bakeries.findById(o.getBakeryId()).orElse(null);
-                if (b != null) {
-                    type = c.getCurrentOrderId() != null ? "pickup" : "offer";
-                    tLat = b.getLatitude();
-                    tLon = b.getLongitude();
-                }
-            }
-        }
+        Order order = orderId == null ? null : orders.findById(orderId).orElse(null);
+        Target t = targetFor(c, order);
         return new MapView.CourierPoint(c.getId(), c.getStatus().name(),
-                c.getLatitude(), c.getLongitude(), orderId, type, tLat, tLon,
-                c.legElapsedMillis());
+                c.getLatitude(), c.getLongitude(), orderId,
+                t.type(), t.lat(), t.lon(), c.legElapsedMillis());
+    }
+
+    private Target targetFor(CourierProfile c, Order order) {
+        if (order == null || c.getStatus() == CourierStatus.OFFLINE) return Target.NONE;
+        return c.getStatus() == CourierStatus.CARRYING
+                ? deliveryTarget(order)
+                : bakeryTarget(c, order);
+    }
+
+    private Target deliveryTarget(Order order) {
+        return customers.findById(order.getCustomerId())
+                .map(l -> new Target("delivery", l.latitude(), l.longitude()))
+                .orElse(Target.NONE);
+    }
+
+    private Target bakeryTarget(CourierProfile c, Order order) {
+        String type = c.getCurrentOrderId() != null ? "pickup" : "offer";
+        return bakeries.findById(order.getBakeryId())
+                .map(b -> new Target(type, b.getLatitude(), b.getLongitude()))
+                .orElse(Target.NONE);
     }
 }
