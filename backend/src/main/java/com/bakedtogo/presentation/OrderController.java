@@ -42,16 +42,27 @@ public class OrderController {
     this.ledgerService = ledgerService;
 }
     @PostMapping
-    public OrderResponse place(@RequestBody PlaceOrderRequest body, HttpServletRequest req) {
-        var items = body.lines().stream()
-                .map(l -> new OrderItemRequest(l.menuItemId(), l.quantity())).toList();
-        return OrderResponse.from(service.placeOrder(ActorResolver.from(req), body.bakeryId(), items));
-    }
+        public OrderResponse place(@RequestBody PlaceOrderRequest body, HttpServletRequest req) {
+            var items = body.lines().stream()
+            .map(l -> new OrderItemRequest(l.menuItemId(), l.quantity()))
+            .toList();
+
+    return OrderResponse.from(
+            service.placeOrder(
+                    ActorResolver.from(req),
+                    body.bakeryId(),
+                    items,
+                    body.promoCode()
+            )
+    );
+}
 
     @PostMapping("/{id}/accept")
-    public OrderResponse accept(@PathVariable String id, HttpServletRequest req) {
-        return OrderResponse.from(service.acceptOrder(ActorResolver.from(req), id));
-    }
+        public OrderResponse accept(@PathVariable String id, HttpServletRequest req) {
+            return OrderResponse.from(
+            service.acceptOrder(ActorResolver.from(req), id)
+    );
+}
 
     @PostMapping("/{id}/reject")
     public OrderResponse reject(@PathVariable String id, @RequestBody RejectRequest body,

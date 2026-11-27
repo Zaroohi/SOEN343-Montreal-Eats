@@ -1,0 +1,8 @@
+{
+  "promos": [
+    { "code": "WELCOME10", "type": "PERCENT", "value": 10, "minOrderValue": 10.00, "expiresOn": "2027-12-31" },
+    { "code": "BAKE5",     "type": "FIXED",   "value": 5,  "minOrderValue": 20.00, "expiresOn": "2027-12-31" },
+    { "code": "BIGSPENDER","type": "PERCENT", "value": 15, "minOrderValue": 50.00, "expiresOn": "2027-12-31" },
+    { "code": "SUMMER20",  "type": "PERCENT", "value": 20, "minOrderValue": 0.00,  "expiresOn": "2026-08-31" }
+  ]
+}

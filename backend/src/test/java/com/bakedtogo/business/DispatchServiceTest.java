@@ -52,7 +52,7 @@ class DispatchServiceTest {
 
     /** Runs a full bakery cycle; markReady triggers the dispatch. */
     private String readyOrder() {
-        String id = orders.placeOrder(customer, "b1", items).order().getId();
+        String id = orders.placeOrder(customer, "b1", items,null).order().getId();
         orders.acceptOrder(staff, id);
         orders.startPreparing(staff, id);
         orders.markReady(staff, id);
@@ -118,7 +118,7 @@ class DispatchServiceTest {
     @Test
     void orderThatIsNotReadyCannotBeDispatched() {
         courier("d1", LAT, LON, CourierStatus.IDLE);
-        String id = orders.placeOrder(customer, "b1", items).order().getId();
+        String id = orders.placeOrder(customer, "b1", items,null).order().getId();
         assertThrows(BusinessRuleException.class, () -> dispatch.dispatch(id));
     }
 }

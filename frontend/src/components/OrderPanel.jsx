@@ -54,7 +54,7 @@ async function viewFinalSummary(id) {
             {user.role !== "COURIER" && orders.length === 0 && <p>No orders yet.</p>}
             {orders.map((o) => (
                 <div key={o.orderId} style={{ border: "1px solid #ccc", padding: 6, marginBottom: 6 }}>
-                    <b>{o.orderId}</b> at {o.bakeryId} - <b>{o.status}</b> - ${o.total.toFixed(2)}
+                    <b>{o.orderId}</b> at {o.bakeryId} - <b>{o.status}</b> - ${o.total.toFixed(2)} {o.promoCode && ` (promo ${o.promoCode}: -$${o.discount.toFixed(2)})`}
                     <div>
                         {o.lines.map((l) => `${l.quantity} x ${l.name}`).join(", ")}
                         {o.rejectionReason && ` (rejected: ${o.rejectionReason})`}

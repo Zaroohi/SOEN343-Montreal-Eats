@@ -20,6 +20,7 @@ public class Order {
     private String rejectionReason;
     private double total;
     private PricingBreakdown pricingBreakdown;
+    private String promoCode;
 
     public Order(String id, String customerId, String bakeryId, List<OrderLine> lines) {
         if (lines == null || lines.isEmpty()) {
@@ -111,4 +112,7 @@ public void setPricingBreakdown(PricingBreakdown pricingBreakdown) {
     this.pricingBreakdown = pricingBreakdown;
     this.total = pricingBreakdown.total();
 }
+
+public String getPromoCode() { return promoCode; }
+public void setPromoCode(String promoCode) { this.promoCode = promoCode; }
 }

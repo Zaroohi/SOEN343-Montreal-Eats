@@ -53,7 +53,7 @@ class PlaceOrderCharacterisationTest {
     }
 
     private OrderResult place(String bakeryId, OrderItemRequest... items) {
-        return service.placeOrder(customer, bakeryId, List.of(items));
+        return service.placeOrder(customer, bakeryId, List.of(items),null);
     }
 
     private OrderItemRequest line(String id, int quantity) {
@@ -116,9 +116,9 @@ class PlaceOrderCharacterisationTest {
     @Test
     void emptyOrMissingItemListIsRefused() {
         BusinessRuleException a = assertThrows(BusinessRuleException.class,
-                () -> service.placeOrder(customer, "b1", List.of()));
+                () -> service.placeOrder(customer, "b1", List.of(),null));
         BusinessRuleException b = assertThrows(BusinessRuleException.class,
-                () -> service.placeOrder(customer, "b1", null));
+                () -> service.placeOrder(customer, "b1", null, null));
         assertEquals("An order needs at least one item", a.getMessage());
         assertEquals("An order needs at least one item", b.getMessage());
     }
@@ -140,7 +140,7 @@ class PlaceOrderCharacterisationTest {
     @Test
     void onlyCustomersMayPlaceAndTheRoleIsCheckedFirst() {
         ForbiddenException ex = assertThrows(ForbiddenException.class,
-                () -> service.placeOrder(staff, "zzz", List.of()));
+                () -> service.placeOrder(staff, "zzz", List.of(),null));
         assertEquals("Role BAKERY_STAFF may not perform this action", ex.getMessage());
     }
 
