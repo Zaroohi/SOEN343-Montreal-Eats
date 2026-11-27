@@ -91,12 +91,9 @@ public class DeliveryService {
     }
 
     /** UC-DLV-05. The order must be READY, so no transition is skipped (R-ORD-04). */
-    public synchronized OrderResult confirmPickup(Actor actor) {
+        public synchronized OrderResult confirmPickup(Actor actor) {
         CourierProfile c = ownProfile(actor);
-        if (c.getStatus() != CourierStatus.ASSIGNED || c.getCurrentOrderId() == null) {
-            throw new BusinessRuleException("No assigned order to pick up (" + c.getStatus() + ")");
-        }
-        Order order = findOrder(c.getCurrentOrderId());
+        Order order = currentOrder(c, CourierStatus.ASSIGNED, "No assigned order to pick up");
         OrderStatus from = order.getStatus();
         order.pickUp();                                  // throws unless READY
         c.pickUp();
@@ -105,49 +102,63 @@ public class DeliveryService {
         return new OrderResult(order, record(order, from, actor));
     }
 
-    /** UC-DLV-06. Closes the delivery, hands off to PRC, retries the dispatch queue. */
     public synchronized OrderResult confirmDelivery(Actor actor) {
         CourierProfile c = ownProfile(actor);
-        if (c.getStatus() != CourierStatus.CARRYING || c.getCurrentOrderId() == null) {
-            throw new BusinessRuleException("Not carrying an order (" + c.getStatus() + ")");
-        }
-        Order order = findOrder(c.getCurrentOrderId());
+        Order order = currentOrder(c, CourierStatus.CARRYING, "Not carrying an order");
         OrderStatus from = order.getStatus();
         order.deliver();                                 // throws unless PICKED_UP
         c.deliver();
-        customers.findById(order.getCustomerId())        // the courier is now at the customer's address
+        customers.findById(order.getCustomerId())        // the courier is now at the customer
                 .ifPresent(l -> c.moveTo(l.latitude(), l.longitude()));
         OrderEvent event = record(order, from, actor);
-        fares.orderDelivered(order, c.getId());
-        manager.updateAvailability(c);                   // observer: courier is idle again
+        settle(order, c, actor.id());
         return new OrderResult(order, event);
     }
 
-    // ---------- operator commands ----------
-
-    /** UC-DLV-07. The only way an accepted assignment can change (R-DLV-02). */
     public synchronized Order reassign(Actor actor, String orderId) {
         requireRole(actor, Role.OPERATOR);
         Order order = findOrder(orderId);
-        CourierProfile holder = couriers.findAll().stream()
-                .filter(c -> orderId.equals(c.getCurrentOrderId()))
-                .findFirst()
-                .orElseThrow(() -> new BusinessRuleException(
-                        "Order " + orderId + " is not assigned to any courier"));
-        if (holder.getStatus() != CourierStatus.OFFLINE) {
-            throw new BusinessRuleException("Courier " + holder.getId() + " is "
-                    + holder.getStatus() + ", not offline");
-        }
-        if (order.getStatus() != OrderStatus.READY) {
-            throw new BusinessRuleException("Order " + orderId + " is already "
-                    + order.getStatus());
-        }
+        CourierProfile holder = holderOf(orderId);
+        requireReassignable(holder, order);
         holder.release();
         log("Operator " + actor.id() + " released order " + orderId
                 + " from courier " + holder.getId());
         dispatch.redispatch(orderId);
         return order;
     }
+
+    private Order currentOrder(CourierProfile c, CourierStatus expected, String problem) {
+        if (c.getStatus() != expected || c.getCurrentOrderId() == null) {
+            throw new BusinessRuleException(problem + " (" + c.getStatus() + ")");
+        }
+        return findOrder(c.getCurrentOrderId());
+    }
+
+    private CourierProfile holderOf(String orderId) {
+        return couriers.findAll().stream()
+                .filter(c -> orderId.equals(c.getCurrentOrderId()))
+                .findFirst()
+                .orElseThrow(() -> new BusinessRuleException(
+                        "Order " + orderId + " is not assigned to any courier"));
+    }
+
+    private void requireReassignable(CourierProfile holder, Order order) {
+        if (holder.getStatus() != CourierStatus.OFFLINE) {
+            throw new BusinessRuleException("Courier " + holder.getId() + " is "
+                    + holder.getStatus() + ", not offline");
+        }
+        if (order.getStatus() != OrderStatus.READY) {
+            throw new BusinessRuleException("Order " + order.getId() + " is already "
+                    + order.getStatus());
+        }
+    }
+
+    /** Billing hand-off (PRC) then "courier is free again" for the dispatch queue. */
+    private void settle(Order order, CourierProfile c, String courierId) {
+        fares.orderDelivered(order, courierId);
+        manager.updateAvailability(c);
+    }
+    
 
     // ---------- queries ----------
 
