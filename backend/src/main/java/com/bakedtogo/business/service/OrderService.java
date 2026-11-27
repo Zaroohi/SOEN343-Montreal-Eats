@@ -65,33 +65,56 @@ public class OrderService implements Resettable {
     // ---------- customer commands ----------
 
     /** UC-ORD-03. Enforces R-ORD-02. */
-    public synchronized OrderResult placeOrder(Actor actor, String bakeryId, List<OrderItemRequest> items) {
+        public synchronized OrderResult placeOrder(Actor actor, String bakeryId,
+                                               List<OrderItemRequest> items) {
         requireRole(actor, Role.CUSTOMER);
         Bakery bakery = findBakery(bakeryId);
+        requireOpen(bakery);
+        List<OrderLine> lines = buildLines(bakery, requireItems(items));
+        Order order = new Order(nextOrderId(), actor.id(), bakeryId, lines);
+        priceOrder(order);
+        orders.save(order);
+        return new OrderResult(order, record(order, null, actor));
+    }
+
+    private void requireOpen(Bakery bakery) {
         if (bakery.getStatus() != BakeryStatus.OPEN) {
             throw new BusinessRuleException("Bakery " + bakery.getName() + " is "
                     + bakery.getStatus().name().toLowerCase() + " and not accepting orders");
         }
+    }
+
+    private List<OrderItemRequest> requireItems(List<OrderItemRequest> items) {
         if (items == null || items.isEmpty()) {
             throw new BusinessRuleException("An order needs at least one item");
         }
+        return items;
+    }
+
+    private List<OrderLine> buildLines(Bakery bakery, List<OrderItemRequest> items) {
         List<OrderLine> lines = new ArrayList<>();
         for (OrderItemRequest item : items) {
-            MenuItem menuItem = bakery.getMenu().stream()
-                    .filter(m -> m.getId().equals(item.menuItemId()))
-                    .findFirst()
-                    .orElseThrow(() -> new NotFoundException(
-                            "Menu item " + item.menuItemId() + " not found at " + bakery.getName()));
-            if (!menuItem.isAvailable()) {
-                throw new BusinessRuleException("Item " + menuItem.getName() + " is sold out");
-            }
-            lines.add(new OrderLine(menuItem.getId(), menuItem.getName(),
-                    menuItem.getPrice(), item.quantity()));
+            lines.add(toLine(bakery, item));
         }
-        Order order = new Order(nextOrderId(), actor.id(), bakeryId, lines);
-        order.setPricingBreakdown(pricing.calculateBreakdown(lines));
-        orders.save(order);
-        return new OrderResult(order, record(order, null, actor));
+        return lines;
+    }
+
+    private OrderLine toLine(Bakery bakery, OrderItemRequest item) {
+        MenuItem menuItem = bakery.getMenu().stream()
+                .filter(m -> m.getId().equals(item.menuItemId()))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException(
+                        "Menu item " + item.menuItemId() + " not found at " + bakery.getName()));
+        if (!menuItem.isAvailable()) {
+            throw new BusinessRuleException("Item " + menuItem.getName() + " is sold out");
+        }
+        return new OrderLine(menuItem.getId(), menuItem.getName(),
+                menuItem.getPrice(), item.quantity());
+    }
+
+    /** Pricing seam: PROMO's validation and discount are applied here (UC-PROMO-01/02). */
+    private void priceOrder(Order order) {
+        order.setTotal(pricing.calculate(order.getLines()));
     }
 
     /** UC-ORD-04. Customers cancel their own order, only while PLACED (the state enforces it). */
