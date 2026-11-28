@@ -10,7 +10,10 @@ CLASSES = [
     "DeliveryService",
     "OrderController",
     "MapService",
-    "CourierProfile"
+    "CourierProfile",
+    "PromoService",
+    "PromoCode",
+    "PromoLoader"
 ]
 
 METHODS = [
